@@ -82,67 +82,7 @@ def create_client() -> AsyncOpenAI:
     return AsyncOpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1", max_retries=0)
 
 
-# ─── 3. KB FORMATTER ─────────────────────────────────────────────────────────
-
-def format_kb_to_markdown(kb: dict) -> str:
-    """Converts KB dict to readable Markdown — lighter than JSON, better for LLM."""
-    lines = []
-
-    # Usługi
-    lines.append("## USŁUGI")
-    for s in kb.get("services", []):
-        lines.append(f"\n### {s.get('name', '')} [{s.get('company_id', '').upper()}]")
-        if s.get("description"):
-            lines.append(s["description"])
-        pricing = s.get("pricing", {})
-        if pricing.get("unit_price"):
-            lines.append(f"Cena: {pricing['unit_price']} {pricing.get('currency', 'PLN')}/{pricing.get('unit', '')}")
-        elif pricing.get("type") == "wycena_indywidualna":
-            lines.append("Cena: wycena indywidualna")
-        if s.get("notes"):
-            lines.append(f"Uwagi: {s['notes']}")
-
-    # Cennik materiałów i prefabrykatów
-    lines.append("\n## CENNIK MATERIAŁÓW (NETTO)")
-    for group in kb.get("global_sales_rules_for_gpt", {}).get("materials_pricing", []):
-        title = group.get("location") or group.get("name") or group.get("group_id", "")
-        lines.append(f"\n### {title}")
-        if group.get("delivery_note"):
-            lines.append(group["delivery_note"])
-        for item in group.get("items", []):
-            if "price_per_ton" in item:          # materiały sypkie (piasek, żwir itd.)
-                note = " ⚠ do weryfikacji" if item.get("to_verify") else ""
-                if item.get("transport"):
-                    note += f", transport {item['transport']} zł"
-                if item.get("notes"):
-                    note += f" ({item['notes']})"
-                lines.append(f"- {item['name']}: {item['price_per_ton']} zł/t{note}")
-            elif "gruszka_pln_m3" in item:       # beton towarowy — dwie osobne linie, zero niejednoznaczności
-                lines.append(f"- Beton {item['class']} (dostawa zwykłą gruszką, bez pompy): "
-                              f"{item['gruszka_pln_m3']} zł/m³")
-                lines.append(f"- Beton {item['class']} (dostawa pompogruszką - cena zawiera beton i pompowanie): "
-                              f"{item['pompogruszka_pln_m3']} zł/m³")
-            elif "cena_pln_szt" in item:         # prefabrykaty
-                lines.append(f"- {item['category']} {item.get('wymiary_cm', '')}: "
-                              f"{item['cena_pln_szt']} zł/szt")
-        sur = group.get("surcharges", {})        # dopłaty do betonu
-        if sur:
-            if sur.get("extra_km_pln_m3"):
-                lines.append(f"  + każdy kolejny km: +{sur['extra_km_pln_m3']} zł/m³")
-            if sur.get("pump_repositioning_pln"):
-                lines.append(f"  + przestawienie pompy: {sur['pump_repositioning_pln']} zł")
-            if sur.get("polypropylene_fiber_pln_m3"):
-                lines.append(f"  + włókno polipropylenowe: {sur['polypropylene_fiber_pln_m3']} zł/m³")
-            if sur.get("winter_heating_surcharge_pct"):
-                lines.append(f"  + grzanie w zimę: +{sur['winter_heating_surcharge_pct']}%")
-        for p in group.get("podsypki", []):      # podsypki cementowe
-            note = f" ({p['notes']})" if p.get("notes") else ""
-            lines.append(f"  - {p['name']}: {p['price_pln_m3']} zł/m³{note}")
-
-    return "\n".join(lines)
-
-
-# ─── 4. SYSTEM PROMPT ─────────────────────────────────────────────────────────
+# ─── 3. SYSTEM PROMPT ─────────────────────────────────────────────────────────
 
 def build_prompt(kb: dict) -> str:
     rules = kb.get("global_sales_rules_for_gpt", {})
@@ -156,8 +96,8 @@ def build_prompt(kb: dict) -> str:
 
     fields_block = "\n".join(f"- {f}" for f in lead_fields) if lead_fields else "- lokalizacja\n- termin\n- ilość\n- warunki dojazdu"
 
-    # Markdown вместо JSON — читабельно для модели, ~50% меньше токенов
-    kb_markdown = format_kb_to_markdown(kb)
+    # Минифицированный JSON — без пробелов, ~1850 токенов, модель читает отлично
+    kb_json = json.dumps(kb, ensure_ascii=False, separators=(',', ':'))
 
     parts = [
         # ── Anti-hallucination guard — стоит первым, чтобы модель видела до контекста ──
@@ -206,7 +146,7 @@ def build_prompt(kb: dict) -> str:
         "Jeśli klient pyta o coś, czego fizycznie nie ma w tym tekście, odpowiedz dokładnie: "
         "'Nie mam dokładnych danych w systemie, muszę to skonsultować z kierownikiem'.",
         "",
-        kb_markdown,
+        kb_json,
     ]
 
     return "\n".join(parts).strip()
@@ -335,7 +275,15 @@ async def _marketing_worker(client: AsyncOpenAI, history_context: str) -> None:
 
         print(f"[MARKETING] Zapisano: {line}")
     except Exception as e:
-        print(f"[MARKETING WARN] {e}")
+        # Dead letter — лид не должен молча потеряться
+        print(f"[MARKETING CRITICAL] Webhook failed, lead lost! Error: {e}")
+        print(f"[MARKETING CRITICAL] Raw context: {history_context[:300]}")
+        if _SENTRY_AVAILABLE and _sentry_dsn:
+            _sentry_sdk.capture_message(
+                f"Lead lost — webhook error: {e}",
+                level="fatal",
+                extras={"history": history_context[:1000]},
+            )
 
 
 def log_marketing(client: AsyncOpenAI, history_context: str) -> None:
