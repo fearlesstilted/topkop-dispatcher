@@ -1,53 +1,98 @@
-## ПЛАН ДЕПЛОЯ И СЛЕДУЮЩИЕ ШАГИ (консенсус Claude + Gemini)
+## TOPKOP DISPATCHER — ПЛАН НА ЗАВТРА/ПОСЛЕЗАВТРА
+Последнее обновление: 2026-04-06
 
 ---
 
-### СЛЕДУЮЩАЯ ЗАДАЧА — Production-ready (когда скажешь "газ")
+## БЛОК 1 — КОД (даю "газ" Claude с утра, до врача)
 
-1. Убить CSV → Make.com вебхук:
-   - Удалить import csv, marketing_leads.csv, MARKETING_PATH
-   - Добавить import httpx + в requirements.txt
-   - В _marketing_worker: async POST на os.getenv("MAKE_WEBHOOK_URL") с JSON-пакетом
-     {"usluga", "miejscowosc", "ilosc", "intencja", "pilnosc", "segment", "jezyk"}
-   - Обернуть в try/except
+### Критичные баги — фиксить в первую очередь
+- [ ] БАГ widget.js: при вводе текста каждая буква рендерится на новой строке (\n)
+      Вероятная причина: split/join по символам вместо слов где-то в render-логике
 
-2. CORS для деплоя:
-   - В demo.launch() добавить cors_allowed_origins=["*"]
-   - Потом сузить до ["https://topkop.pl", "https://www.topkop.pl"]
+### Зачистка UI
+- [ ] app_web.py: удалить QUICK_REPLIES, CSS кнопок, _make_quick_handler полностью
+- [ ] widget.js: удалить рендер #tk-quick и функцию buildQuickReplies
+- [ ] Улучшить стиль виджета (сейчас "так себе" по словам владельца)
 
----
+### Маркетинг-парсер (критично для лидов!)
+- [ ] Добавить 8-е поле Telefon в промпт _marketing_worker
+      Формат: Usługa; Miejscowość; Ilość; Intencja; Pilność; Segment; Język; Telefon
+      Если клиент не оставил — писать "Brak"
+      БЕЗ ЭТОГО менеджер не может перезвонить — бот бесполезен для продаж
 
-### ROADMAP ДЕПЛОЯ
+### Make.com + CORS
+- [ ] Удалить: import csv, MARKETING_PATH, всю работу с marketing_leads.csv
+- [ ] Добавить: import httpx + в requirements.txt
+- [ ] В _marketing_worker: async POST на os.getenv("MAKE_WEBHOOK_URL")
+      JSON: {usluga, miejscowosc, ilosc, intencja, pilnosc, segment, jezyk, telefon}
+      try/except: при ошибке → [CRITICAL MAKE FALLBACK] в консоль + Sentry fatal
+- [ ] demo.launch(): добавить cors_allowed_origins=["*"]
 
-Шаг 1 — Бэкенд (Мозг):
-  - Задеплоить app_web.py на HuggingFace Spaces (бесплатно, нативный Gradio)
-  - Или Render.com / Railway как альтернатива
-  - Secrets: GROQ_API_KEY, SENTRY_DSN, MAKE_WEBHOOK_URL
-  - Получить постоянный URL типа https://topkop-bot.hf.space
-
-Шаг 2 — Фронтенд (Виджет):
-  - widget.js минифицировать
-  - Положить в корень сайта босса через FTP / медиабиблиотеку WordPress
-  - Вставить одну строку в Footer сайта:
-    <script defer src="https://topkop.pl/widget.js" data-endpoint="https://topkop-bot.hf.space"></script>
-
-Шаг 3 — Make.com:
-  - Создать вебхук в Make.com
-  - MAKE_WEBHOOK_URL прописать в Secrets на HF Spaces
-  - Сценарий: Webhook → Google Sheets / Email / CRM
+### Shadow DOM (widget.js)
+- [ ] Переписать генерацию DOM в widget.js используя Shadow DOM
+      Причина: изолирует виджет от CSS родительского сайта (WordPress/Webflow)
+      Делать вместе с Make.com, до деплоя
 
 ---
 
-### ОТЛОЖЕНО (не для MVP)
+## БЛОК 2 — НАСТРОЙКА (руками, ~20-30 мин)
 
-- Shadow DOM для widget.js (защита от CSS bleeding родительского сайта)
-  Причина: для MVP --tk- префиксы достаточны. Делать перед финальным деплоем.
-- Сужение CORS до конкретного домена — после получения продакшн URL
+### Make.com
+- [ ] Создать вебхук в Make.com (после тутора)
+- [ ] Сценарий: Webhook → Google Sheets + Email менеджеру
+- [ ] Скопировать URL вебхука в .env: MAKE_WEBHOOK_URL=https://hook.eu2.make.com/...
+
+### Тест перед показом CEO
+- [ ] Написать боту как клиент, в конце оставить номер телефона
+- [ ] Проверить что номер долетел в Make.com / Google Sheets
+- [ ] Если долетел — можно показывать
 
 ---
 
-### ТЕХНИЧЕСКИЕ ДОЛГИ
+## БЛОК 3 — ДЕПЛОЙ (после теста на локалке)
 
-- config.py — мёртвый код, не импортируется. Удалить при следующем коммите.
-- HISTORY_LIMIT=4 — ок для TPM, но может ронять контекст длинных сделок. Мониторить.
-- asyncio.create_task в log_marketing — убедиться что task не теряется на HF Spaces.
+### HuggingFace Spaces (бесплатно)
+- [ ] Создать новый Space (Gradio)
+- [ ] Загрузить: app_web.py, KnowledgeTopKop.json, requirements.txt
+- [ ] Secrets добавить: GROQ_API_KEY, SENTRY_DSN, MAKE_WEBHOOK_URL
+- [ ] Получить URL типа https://topkop-bot.hf.space
+
+### Keep-alive (чтобы не засыпал)
+- [ ] В Make.com создать cron: каждые 25 мин GET-запрос на URL Space
+      Без этого HF усыпляет сервер через 48ч неактивности (cold start 2-3 мин)
+
+### Виджет на сайт
+- [ ] widget.js минифицировать
+- [ ] Загрузить на сайт босса (FTP или WordPress медиабиблиотека)
+- [ ] Вставить в Footer одну строку:
+      <script defer src="https://topkop.pl/widget.js" data-endpoint="https://topkop-bot.hf.space"></script>
+
+---
+
+## БЛОК 4 — ПОСЛЕ ВРАЧА / ПОСЛЕЗАВТРА
+
+- [ ] Собрать логи и фидбек от CEO
+- [ ] Проверить Sentry — были ли ошибки
+- [ ] Проверить Make.com — долетели ли тестовые лиды
+- [ ] Обсудить с CEO:
+      - Groq pay-as-you-go $5 (если нужно больше токенов)
+      - Render.com $7/мес (если нужен надёжный хостинг без cold start)
+      - Рабочий ноутбук
+
+---
+
+## ФИНАНСОВЫЙ ПЛАН
+
+| Этап | Стоимость | Когда |
+|---|---|---|
+| MVP тест (сейчас) | $0 | HF Spaces free + Groq free |
+| После одобрения CEO | $5 единоразово | Groq pay-as-you-go |
+| Продакшн | $7/мес Render + ~$5/мес Groq | Когда пойдут реальные клиенты |
+
+---
+
+## ТЕХНИЧЕСКИЕ ДОЛГИ (на потом)
+
+- HISTORY_LIMIT=4 — следить за контекстом длинных сделок
+- CORS сузить до ["https://topkop.pl"] после деплоя
+- asyncio.create_task в log_marketing — проверить на HF Spaces
