@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TOP KOP — Demo Strona</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #e07b00;
+      --dark:   #111;
+      --surface:#1c1c1c;
+      --text:   #ddd;
+    }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      border-bottom: 1px solid #222;
+      background: #0d0d0d;
+    }
+    .logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+    .logo span { color: var(--orange); }
+    nav ul { list-style: none; display: flex; gap: 32px; }
+    nav ul a { color: #999; text-decoration: none; font-size: 14px; font-weight: 500; transition: color .15s; }
+    nav ul a:hover { color: #fff; }
+
+    /* ── HERO ── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      max-width: 1100px;
+      margin: 80px auto 60px;
+      padding: 0 40px;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(224,123,0,.15);
+      border: 1px solid rgba(224,123,0,.35);
+      color: var(--orange);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 800;
+      line-height: 1.05;
+      color: #fff;
+      letter-spacing: -.5px;
+    }
+    .hero h1 em { color: var(--orange); font-style: normal; }
+    .hero p {
+      margin-top: 18px;
+      font-size: 15.5px;
+      line-height: 1.7;
+      color: #999;
+      max-width: 480px;
+    }
+    .hero-cta {
+      margin-top: 32px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      padding: 13px 28px;
+      border-radius: 10px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+    }
+    .btn-primary:hover { background: #c46d00; transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent;
+      color: #ccc;
+      border: 1px solid #333;
+      padding: 13px 28px;
+      border-radius: 10px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .btn-outline:hover { border-color: #666; color: #fff; }
+
+    /* Hero visual */
+    .hero-visual {
+      background: var(--surface);
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-visual::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(224,123,0,.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .stat-card {
+      background: #151515;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .stat-card .val {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--orange);
+      line-height: 1;
+    }
+    .stat-card .lbl {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+    .stat-card.wide { grid-column: 1 / -1; }
+    .activity-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #151515;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      margin-top: 16px;
+      font-size: 13px;
+    }
+    .act-dot { width: 8px; height: 8px; border-radius: 50%; background: #4caf50; flex-shrink: 0; box-shadow: 0 0 6px #4caf5066; }
+    .act-text { color: #888; }
+    .act-text strong { color: #ccc; }
+
+    /* ── SERVICES STRIP ── */
+    .services {
+      max-width: 1100px;
+      margin: 0 auto 80px;
+      padding: 0 40px;
+    }
+    .section-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 20px;
+    }
+    .service-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+    }
+    .service-card {
+      background: var(--surface);
+      border: 1px solid #252525;
+      border-radius: 12px;
+      padding: 20px;
+      transition: border-color .2s, transform .2s;
+      cursor: default;
+    }
+    .service-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+    .svc-icon {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+    .svc-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #e0e0e0;
+      letter-spacing: .3px;
+    }
+    .svc-desc { font-size: 12px; color: #666; margin-top: 4px; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid #1e1e1e;
+      padding: 24px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #555;
+    }
+
+    @media (max-width: 700px) {
+      .hero { grid-template-columns: 1fr; margin: 40px auto 40px; }
+      .hero-visual { display: none; }
+      nav ul { display: none; }
+      nav { padding: 16px 20px; }
+      .hero, .services { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">TOP<span>KOP</span></div>
+    <ul>
+      <li><a href="#">Oferta</a></li>
+      <li><a href="#">Cennik</a></li>
+      <li><a href="#">O nas</a></li>
+      <li><a href="#">Kontakt</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <div class="hero-tag">✦ Gołdap &amp; Mazury · od 2009 r.</div>
+      <h1>Roboty ziemne<br/>i transport<br/><em>pod klucz</em></h1>
+      <p>
+        Dyspozytor TOP KOP dostępny 24/7. Wykopy, kruszywa, wynajem maszyn,
+        przeciski pod drogami — wycena natychmiast.
+      </p>
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="document.getElementById('tk-fab').click()">
+          Zapytaj dyspozytora →
+        </button>
+        <button class="btn-outline">+48 87 520 10 03</button>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="val">15+</div>
+          <div class="lbl">lat doświadczenia</div>
+        </div>
+        <div class="stat-card">
+          <div class="val">24t</div>
+          <div class="lbl">max tonaż transportu</div>
+        </div>
+        <div class="stat-card">
+          <div class="val">80–135</div>
+          <div class="lbl">mm • przeciski bezwykopowe</div>
+        </div>
+        <div class="stat-card">
+          <div class="val">10+</div>
+          <div class="lbl">maszyn w parku</div>
+        </div>
+      </div>
+      <div class="activity-bar">
+        <div class="act-dot"></div>
+        <div class="act-text">Dyspozytor <strong>online</strong> · odpowiada w kilka sekund</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services">
+    <div class="section-label">Nasza oferta</div>
+    <div class="service-cards">
+      <div class="service-card"><div class="svc-icon">⛏️</div><div class="svc-name">Roboty ziemne</div><div class="svc-desc">Wykopy, niwelacja, stawy</div></div>
+      <div class="service-card"><div class="svc-icon">🚛</div><div class="svc-name">Transport</div><div class="svc-desc">Kruszywa, ziemia, maszyny</div></div>
+      <div class="service-card"><div class="svc-icon">🏗️</div><div class="svc-name">Wynajem maszyn</div><div class="svc-desc">Koparki, ładowarki, walce</div></div>
+      <div class="service-card"><div class="svc-icon">🔩</div><div class="svc-name">Przeciski</div><div class="svc-desc">Pod drogami i torami</div></div>
+      <div class="service-card"><div class="svc-icon">🧱</div><div class="svc-name">Kostka brukowa</div><div class="svc-desc">Chodniki, parkingi, place</div></div>
+      <div class="service-card"><div class="svc-icon">🏭</div><div class="svc-name">RCM — stal</div><div class="svc-desc">Cięcie, spawanie, CNC</div></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 TOP KOP · ul. Graniczna 3, 19-500 Gołdap</span>
+    <span>biuro.topkop@gmail.com</span>
+  </footer>
+
+  <!--
+    ═══════════════════════════════════════════════════════
+      CHAT WIDGET — один тег на любой странице сайта.
+      data-endpoint → URL запущенного Gradio (share или локальный)
+    ═══════════════════════════════════════════════════════
+  -->
+  <script src="widget.js" data-endpoint="https://2c39a162d31840f480.gradio.live"></script>
+
+</body>
+</html>

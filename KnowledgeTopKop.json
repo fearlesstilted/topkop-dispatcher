@@ -1,0 +1,987 @@
+{
+  "knowledge_base_name": "TOPKOP_i_RCM_uslugi_baza_v1",
+  "language": "pl",
+  "last_compiled": "2026-04-02",
+  "companies": [
+    {
+      "company_id": "topkop",
+      "name": "TOP KOP",
+      "address": "ul. Graniczna 3, 19-500 Gołdap",
+      "phone": "+48 87 520 10 03",
+      "email": "biuro.topkop@gmail.com",
+      "since": 2009,
+      "service_area_general": [
+        "Gołdap",
+        "Suwałki",
+        "Olecko",
+        "północno-wschodnia Polska",
+        "cała Polska (dla części usług transportowych)",
+        "woj. warmińsko-mazurskie",
+        "woj. podlaskie"
+      ],
+      "company_profile": [
+        "roboty ziemne",
+        "układanie kostki brukowej",
+        "wynajem sprzętu budowlanego",
+        "wynajem maszyn",
+        "usługi transportowe",
+        "przeciski pod drogami",
+        "odśnieżanie",
+        "roboty rozbiórkowe",
+        "budowa rurociągów telekomunikacyjnych"
+      ],
+      "source_urls": [
+        "https://topkop.pl/nasza-oferta/roboty-ziemne/budowa-stawow/",
+        "https://topkop.pl/nasza-oferta/roboty-ziemne/niwelacja-terenu/",
+        "https://topkop.pl/nasza-oferta/roboty-ziemne/wykopy/",
+        "https://topkop.pl/nasza-oferta/ukladanie-kostki-brukowej/",
+        "https://topkop.pl/nasza-oferta/wypozyczalnia-sprzetu-budowlanego/",
+        "https://topkop.pl/nasza-oferta/wynajem-maszyn/",
+        "https://topkop.pl/nasza-oferta/uslugi-transportowe/",
+        "https://topkop.pl/nasza-oferta/przeciski-pod-drogami/",
+        "https://topkop.pl/nasza-oferta/odsniezanie/",
+        "https://topkop.pl/nasza-oferta/roboty-rozbiorkowe/",
+        "https://topkop.pl/nasza-oferta/budowa-rurociagow-telekomunikacyjnych/"
+      ]
+    },
+    {
+      "company_id": "rcm",
+      "name": "RCM Sp. z o.o.",
+      "address": "ul. Graniczna 3, 19-500 Gołdap",
+      "phone": "+48 787 007 340",
+      "email": "biuro@rcmc.pl",
+      "nip": "847-16-16-578",
+      "company_profile": [
+        "konstrukcje stalowe na zamówienie",
+        "cięcie plazmą",
+        "spawanie",
+        "obróbka skrawaniem"
+      ],
+      "source_urls": [
+        "https://rcmc.pl/uslugi"
+      ]
+    }
+  ],
+  "services": [
+    {
+      "service_id": "topkop_budowa_stawow",
+      "company_id": "topkop",
+      "name": "Budowa stawów",
+      "category": "roboty ziemne",
+      "search_keywords": [
+        "staw", "oczko", "zbiornik", "retencyjn", "hodowl",
+        "meliorac", "drenaż", "podmokł", "bagien", "torfowisk",
+        "oczek wodnych", "kąpielow"
+      ],
+      "description": "Kompleksowe kopanie stawów, oczek wodnych i większych zbiorników wodnych do celów rekreacyjnych i hodowlanych.",
+      "client_types": [
+        "klienci indywidualni",
+        "rolnicy",
+        "gospodarstwa rybne",
+        "inwestorzy prywatni"
+      ],
+      "applications": [
+        "stawy rekreacyjne",
+        "stawy hodowlane",
+        "oczka wodne",
+        "zbiorniki wodne",
+        "zbiorniki retencyjne",
+        "gromadzenie wody",
+        "naturalne filtrowanie wody",
+        "przydomowe stawy kąpielowe"
+      ],
+      "scope_of_work": [
+        "wykop stawu lub oczka wodnego",
+        "dokładne profilowanie skarp",
+        "profilowanie dna",
+        "odprowadzenie nadmiaru ziemi",
+        "przygotowanie terenu do dalszych prac",
+        "dopasowanie wielkości i głębokości do potrzeb inwestora",
+        "realizacja na terenach trudnodostępnych"
+      ],
+      "terrain_conditions_supported": [
+        "tereny podmokłe",
+        "torfowiska",
+        "tereny bagienne",
+        "tereny trudnodostępne"
+      ],
+      "design_considerations": [
+        "rodzaj terenu",
+        "wielkość działki",
+        "warunki gruntowo-wodne",
+        "indywidualny kształt zbiornika",
+        "głębokość zbiornika",
+        "otoczenie roślinne",
+        "otoczenie kamienne"
+      ],
+      "lining_options": [
+        "folia",
+        "glina",
+        "niecka prefabrykowana"
+      ],
+      "related_services": [
+        "melioracja",
+        "drenaż",
+        "odwadnianie terenu",
+        "czyszczenie stawów",
+        "porządkowanie trudno dostępnych terenów"
+      ],
+      "melioration_scope": [
+        "odwadnianie terenu",
+        "wykonywanie rowów melioracyjnych",
+        "czyszczenie rowów melioracyjnych",
+        "odwodnienie liniowe",
+        "drenaż opaskowy",
+        "opaski żwirowo-drenażowe wokół budynków"
+      ],
+      "service_area_specific": [
+        "warmińsko-mazurskie",
+        "podlaskie",
+        "Olsztyn",
+        "Mrągowo",
+        "Węgorzewo",
+        "Iława",
+        "Pisz",
+        "Ełk",
+        "Giżycko",
+        "Kętrzyn",
+        "Mikołajki",
+        "Elbląg",
+        "Suwałki",
+        "Augustów",
+        "Białystok",
+        "Łomża",
+        "Grajewo",
+        "Zambrów",
+        "Hajnówka",
+        "Sokółka"
+      ],
+      "sales_notes": [
+        "dobry lead wymaga pytania o wielkość zbiornika",
+        "trzeba ustalić warunki gruntowo-wodne",
+        "trzeba zapytać o dojazd sprzętu",
+        "warto ustalić, czy klient chce zbiornik rekreacyjny, hodowlany czy retencyjny"
+      ],
+      "source_url": "https://topkop.pl/nasza-oferta/roboty-ziemne/budowa-stawow/"
+    },
+    {
+      "service_id": "topkop_niwelacja_terenu",
+      "company_id": "topkop",
+      "name": "Niwelacja terenu",
+      "category": "roboty ziemne",
+      "search_keywords": [
+        "niwelac", "wyrówna", "poziom", "działka", "spadek",
+        "ukształtow", "teren pod budow", "nierównoś", "zasypan",
+        "podwyższ", "wyrównanie terenu"
+      ],
+      "description": "Prace przygotowawcze przed budową polegające na pomiarach i wyrównaniu działki.",
+      "applications": [
+        "przygotowanie działki pod budowę",
+        "wyrównanie działki",
+        "usunięcie nierówności terenu",
+        "dopasowanie poziomu terenu do drogi"
+      ],
+      "scope_of_work": [
+        "dokładne pomiary między punktami na działce",
+        "określenie relacji działki do drogi",
+        "usuwanie nadmiaru ziemi",
+        "dosypywanie gruntu",
+        "zasypywanie dołów i zagłębień",
+        "podwyższanie terenu",
+        "wyrównywanie spadków"
+      ],
+      "goals": [
+        "przygotowanie terenu pod inwestycję",
+        "eliminacja nierówności",
+        "stworzenie odpowiednich poziomów"
+      ],
+      "sales_notes": [
+        "trzeba ustalić powierzchnię działki",
+        "trzeba zapytać o różnice poziomów",
+        "trzeba ustalić, czy materiał ziemny jest na miejscu czy trzeba go dowieźć/wywieźć",
+        "zawsze zapytać o warunki dojazdu"
+      ],
+      "source_url": "https://topkop.pl/nasza-oferta/roboty-ziemne/niwelacja-terenu/"
+    },
+    {
+      "service_id": "topkop_wykopy",
+      "company_id": "topkop",
+      "name": "Wykopy",
+      "category": "roboty ziemne",
+      "search_keywords": [
+        "wykop", "fundament", "przyłącz", "kanalizacj",
+        "instalacj", "rur", "podpiwniczen", "nasyp",
+        "wodociąg", "elektryczn", "kopanie"
+      ],
+      "description": "Wykopy pod infrastrukturę budowlaną, instalacyjną i drogową.",
+      "applications": [
+        "fundamenty",
+        "przyłącza",
+        "instalacje wodno-kanalizacyjne",
+        "instalacje elektryczne",
+        "stawy",
+        "drogi",
+        "zbiorniki retencyjne",
+        "nasypy"
+      ],
+      "scope_of_work": [
+        "wykopy pod fundamenty",
+        "wykopy pod instalacje",
+        "wykopy pod drogi",
+        "wykopy pod zbiorniki retencyjne",
+        "kształtowanie nasypów"
+      ],
+      "technical_notes": {
+        "wykopy_szerokoprzestrzenne": {
+          "minimum_bottom_width_m": 1.5,
+          "typical_depth_range_m": [0.8, 1.4],
+          "notes": [
+            "często odpowiada poziomowi przemarzania gruntu",
+            "przy podpiwniczeniu obiektów głębokość może być większa"
+          ]
+        }
+      },
+      "experience_note": "Firma podkreśla ponad 10-letnie doświadczenie oraz planowanie prac z wyprzedzeniem.",
+      "sales_notes": [
+        "trzeba ustalić rodzaj wykopu",
+        "trzeba ustalić głębokość, szerokość i długość",
+        "trzeba zapytać o grunt",
+        "trzeba ustalić, czy ziemia zostaje na miejscu czy ma być wywieziona",
+        "zawsze zapytać o warunki dojazdu"
+      ],
+      "source_url": "https://topkop.pl/nasza-oferta/roboty-ziemne/wykopy/"
+    },
+    {
+      "service_id": "topkop_kostka_brukowa",
+      "company_id": "topkop",
+      "name": "Układanie kostki brukowej",
+      "category": "brukarstwo",
+      "search_keywords": [
+        "kostka", "brukow", "chodnik", "podjazd", "taras",
+        "parking", "plac", "granit", "nawierzchni", "brukarsk",
+        "układan", "kostki"
+      ],
+      "description": "Profesjonalne układanie chodników i placów z kostki brukowej oraz granitowej.",
+      "client_types": [
+        "klienci indywidualni",
+        "firmy",
+        "deweloperzy"
+      ],
+      "applications": [
+        "podjazdy",
+        "chodniki",
+        "tarasy",
+        "parkingi",
+        "place przemysłowe",
+        "drogi dojazdowe",
+        "tereny przemysłowe"
+      ],
+      "materials": [
+        "kostka brukowa",
+        "kostka granitowa"
+      ],
+      "service_area_specific": [
+        "Suwałki",
+        "Gołdap",
+        "Olecko",
+        "północno-wschodnia Polska"
+      ],
+      "advantages_declared": [
+        "szybkie wykonanie",
+        "dokładne wykonanie",
+        "terminowość",
+        "doradztwo"
+      ],
+      "sales_notes": [
+        "trzeba ustalić powierzchnię w m2",
+        "trzeba ustalić rodzaj kostki",
+        "trzeba ustalić przeznaczenie nawierzchni",
+        "trzeba ustalić, czy potrzebna jest podbudowa i obrzeża",
+        "zawsze zapytać o warunki dojazdu"
+      ],
+      "source_url": "https://topkop.pl/nasza-oferta/ukladanie-kostki-brukowej/"
+    },
+    {
+      "service_id": "topkop_wypozyczalnia_sprzetu_budowlanego",
+      "company_id": "topkop",
+      "name": "Wypożyczalnia sprzętu budowlanego",
+      "category": "wynajem sprzętu",
+      "search_keywords": [
+        "wypożycz", "wynajem sprzętu", "zagęszczark", "kompresor",
+        "sprężark", "agregat", "przecinark", "piła", "osuszacz",
+        "nagrzewnic", "myjka", "spawark", "betoniark", "szalunek",
+        "walec", "drabina", "kosiark", "wiązarka", "piaskark",
+        "dalmierz", "gwintownic", "wozidełko", "pompa zatapialn"
+      ],
+      "description": "Szeroki katalog sprzętu z rozliczeniem dobowym w dwóch progach: 1-7 dni i powyżej 7 dni.",
+      "pricing_model": {
+        "type": "netto_dobowy",
+        "columns": [
+          "cena netto doba 1-7",
+          "cena netto doba powyżej 7"
+        ]
+      },
+      "equipment_categories": [
+        "sprzęt do tynków i podłóg",
+        "sprężarki i kompresory",
+        "młoty i narzędzia pneumatyczne",
+        "zagęszczarki i wibratory",
+        "agregaty prądotwórcze",
+        "przecinarki i piły",
+        "osuszanie i ogrzewanie",
+        "mycie",
+        "spawanie i plazma",
+        "pompy",
+        "drabiny",
+        "sprzęt ogrodowy",
+        "sprzęt rolniczy",
+        "sprzęt do betonu",
+        "osprzęt drogowy",
+        "przyczepy",
+        "szalunki",
+        "walce"
+      ],
+      "example_equipment": [
+        "frezarka do tynków",
+        "cykliniarka Bona",
+        "wozidełko Belle BMD 300",
+        "kompresor CompAir 3,8 m3/min",
+        "sprężarka Walter 270 l",
+        "sprężarka Metabo 100 l",
+        "sprężarka Best-Air 50 l",
+        "młot pneumatyczny Atlas Copco",
+        "zagęszczarka 100 kg",
+        "zagęszczarka 200 kg",
+        "zagęszczarka 300 kg",
+        "zagęszczarka 500 kg",
+        "listwa wibracyjna 2 m",
+        "listwa wibracyjna 4 m",
+        "stopa wibracyjna 70 kg",
+        "agregat prądotwórczy",
+        "przecinarka STIHL TS 800",
+        "piła spalinowa STIHL MS 261",
+        "piecyk gazowy",
+        "osuszacz powietrza",
+        "nagrzewnica elektryczna 3.3 kW",
+        "nagrzewnica olejowa",
+        "myjka ciśnieniowa Karcher 720 MXS",
+        "spawarka inwertorowa",
+        "przecinarka plazmowa",
+        "pompa zatapialna 3000 W",
+        "gwoździarka pneumatyczna Stanley Bostitch",
+        "drabiny",
+        "pompa do paliwa",
+        "szlifierki",
+        "wiązarka do zbrojeń MAX Rebar Tier RB217",
+        "piaskarka",
+        "dalmierz laserowy",
+        "gwintownica do rur stalowych",
+        "znaki drogowe",
+        "kosiarki",
+        "wały do trawy",
+        "zamiatarka ciągnikowa",
+        "glebogryzarka pod ciągnik",
+        "betoniarka 150 l",
+        "mieszalnik do betonu",
+        "listwa do ściągania plantu",
+        "płyty drogowe",
+        "przyczepy ciężarowe i rolnicze",
+        "przecinarka do asfaltu",
+        "szalunki ścienne",
+        "walec Bomag BW 65 H",
+        "walec wibracyjny 4 t"
+      ],
+      "sample_prices_net": [
+        {
+          "item": "zagęszczarka 500 kg",
+          "price_1_7_days": 350,
+          "price_above_7_days": 300,
+          "currency": "PLN"
+        },
+        {
+          "item": "piecyk gazowy",
+          "price_1_7_days": 40,
+          "price_above_7_days": 30,
+          "currency": "PLN"
+        },
+        {
+          "item": "osuszacz powietrza",
+          "price_1_7_days": 90,
+          "price_above_7_days": 70,
+          "currency": "PLN"
+        },
+        {
+          "item": "dalmierz laserowy",
+          "price_1_7_days": 60,
+          "price_above_7_days": 40,
+          "currency": "PLN"
+        },
+        {
+          "item": "piaskarka",
+          "price_1_7_days": 230,
+          "price_above_7_days": 200,
+          "currency": "PLN"
+        },
+        {
+          "item": "kosiarka traktorek",
+          "price_1_7_days": 150,
+          "price_above_7_days": 120,
+          "currency": "PLN"
+        },
+        {
+          "item": "kosa spalinowa STIHL",
+          "price_1_7_days": 100,
+          "price_above_7_days": 80,
+          "currency": "PLN"
+        },
+        {
+          "item": "gwintownica do rur stalowych",
+          "price_1_7_days": 90,
+          "price_above_7_days": 70,
+          "currency": "PLN"
+        }
+      ],
+      "special_notes": [
+        "przy przecinarce STIHL TS 800 kaucja za tarcze pobierana jest oddzielnie"
+      ],
+      "sales_notes": [
+        "trzeba ustalić liczbę dni wynajmu",
+        "trzeba potwierdzić dostępność konkretnego modelu",
+        "trzeba ustalić odbiór własny czy transport",
+        "przy wybranych pozycjach warto pytać o kaucję i osprzęt"
+      ],
+      "source_url": "https://topkop.pl/nasza-oferta/wypozyczalnia-sprzetu-budowlanego/"
+    },
+    {
+      "service_id": "topkop_wynajem_maszyn",
+      "company_id": "topkop",
+      "name": "Wynajem maszyn",
+      "category": "wynajem maszyn",
+      "search_keywords": [
+        "wynajem maszyn", "koparka", "koparko", "ładowarka",
+        "spycharka", "wozidło", "minikoparka",
+        "cat", "jcb", "komatsu", "sany", "xcmg", "wacker",
+        "thwaites", "wynajm", "maszyn budowlanych"
+      ],
+      "description": "Wynajem maszyn budowlanych do robót ziemnych, drogowych i transportowych.",
+      "pricing_model": {
+        "types": [
+          "koszt netto na dobę",
+          "koszt netto na miesiąc"
+        ]
+      },
+      "machine_prices_daily_net": [
+        {
+          "machine": "Walec XCMG",
+          "price": 600,
+          "currency": "PLN"
+        },
+        {
+          "machine": "Agregat 200 kW",
+          "price": 1200,
+          "currency": "PLN"
+        },
+        {
+          "machine": "Wozidło Thwaites 6 t obrotowe",
+          "price": 700,
+          "currency": "PLN"
+        },
+        {
+          "machine": "Koparka CAT 302",
+          "price": 400,
+          "currency": "PLN"
+        },
+        {
+          "machine": "Koparka CAT 306",
+          "price": 700,
+          "currency": "PLN"
+        },
+        {
+          "machine": "Koparko-ładowarka JCB 4CX",
+          "price": 800,
+          "currency": "PLN"
+        },
+        {
+          "machine": "Ładowarka Komatsu WA480",
+          "price": 1200,
+          "currency": "PLN"
+        },
+        {
+          "machine": "Koparka Sany SY80",
+          "price": 900,
+          "currency": "PLN"
+        },
+        {
+          "machine": "Wozidło Wacker Neuson 9 t",
+          "price": 1250,
+          "currency": "PLN"
+        },
+        {
+          "machine": "Minikoparka Wacker Neuson 3.2 t",
+          "price": 1000,
+          "currency": "PLN"
+        }
+      ],
+      "machine_prices_monthly_net": [
+        {
+          "machine": "Spycharka CAT D6N",
+          "price": 17000,
+          "currency": "PLN"
+        },
+        {
+          "machine": "Spycharka CAT D4",
+          "price": 9000,
+          "currency": "PLN"
+        },
+        {
+          "machine": "Pługoukładacz Goliat",
+          "price": 80000,
+          "currency": "PLN"
+        }
+      ],
+      "applications": [
+        "roboty ziemne",
+        "roboty drogowe",
+        "transport na budowie"
+      ],
+      "sales_notes": [
+        "trzeba ustalić okres wynajmu",
+        "trzeba zapytać o operatora, jeśli potrzebny",
+        "trzeba ustalić miejsce podstawienia",
+        "trzeba zapytać o warunki dojazdu i teren pracy"
+      ],
+      "source_url": "https://topkop.pl/nasza-oferta/wynajem-maszyn/"
+    },
+    {
+      "service_id": "topkop_uslugi_transportowe",
+      "company_id": "topkop",
+      "name": "Usługi transportowe",
+      "category": "transport",
+      "search_keywords": [
+        "transport", "przewóz", "piasek", "żwir",
+        "kruszywo", "kamień", "ziemi", "dostaw",
+        "wywrotk", "tonarz", "materiał sypk", "przywóz"
+      ],
+      "description": "Transport materiałów sypkich i maszyn na terenie całej Polski.",
+      "client_types": [
+        "firmy",
+        "klienci indywidualni"
+      ],
+      "transport_scope": [
+        "transport materiałów sypkich",
+        "transport maszyn"
+      ],
+      "weight_range_tons": {
+        "min": 3.5,
+        "max": 24
+      },
+      "materials_examples": [
+        "piasek",
+        "ziemia",
+        "kruszywo",
+        "kamień 16-32 otoczak",
+        "kamień do gabionów",
+        "żwir"
+      ],
+      "service_area_specific": [
+        "cała Polska"
+      ],
+      "sales_notes": [
+        "trzeba ustalić rodzaj materiału",
+        "trzeba ustalić tonarz",
+        "trzeba ustalić trasę i miejsce rozładunku",
+        "zawsze zapytać o warunki dojazdu"
+      ],
+      "source_url": "https://topkop.pl/nasza-oferta/uslugi-transportowe/"
+    },
+    {
+      "service_id": "topkop_przeciski_pod_drogami",
+      "company_id": "topkop",
+      "name": "Przeciski pod drogami",
+      "category": "roboty specjalistyczne",
+      "search_keywords": [
+        "przecisk", "bezwykopow", "kret", "tory",
+        "przejście pod", "horyzont", "przeciągnięci",
+        "pod drogą", "pod jezdnią", "przewiert"
+      ],
+      "description": "Przeciski pod drogami i torami metodą bezwykopową z użyciem kreta.",
+      "technology": [
+        "metoda bezwykopowa",
+        "kret"
+      ],
+      "applications": [
+        "przejścia pod drogami",
+        "przejścia pod torami"
+      ],
+      "diameter_range_mm": {
+        "min": 80,
+        "max": 135
+      },
+      "advantages_declared": [
+        "brak zakłóceń w ruchu pieszym",
+        "brak zakłóceń w ruchu drogowym",
+        "brak niszczenia nawierzchni",
+        "brak niszczenia podbudowy",
+        "korzyść kosztowa",
+        "oszczędność czasu pracy",
+        "doradztwo"
+      ],
+      "sales_notes": [
+        "trzeba ustalić długość przecisku",
+        "trzeba ustalić średnicę",
+        "trzeba ustalić rodzaj przeszkody terenowej",
+        "trzeba zapytać o dokumentację i uzgodnienia"
+      ],
+      "source_url": "https://topkop.pl/nasza-oferta/przeciski-pod-drogami/"
+    },
+    {
+      "service_id": "topkop_odsniezanie",
+      "company_id": "topkop",
+      "name": "Odśnieżanie",
+      "category": "usługi sezonowe",
+      "search_keywords": [
+        "odśnieżan", "śnieg", "zima", "zimow", "pług śnieżn",
+        "posypywan", "zimowe utrzyman", "odladzani"
+      ],
+      "description": "Zimowe odśnieżanie z użyciem profesjonalnego sprzętu do szybkiej obsługi dużych powierzchni.",
+      "applications": [
+        "drogi",
+        "chodniki",
+        "parkingi",
+        "place manewrowe",
+        "dojazdy do posesji"
+      ],
+      "advantages_declared": [
+        "profesjonalny sprzęt",
+        "szybka obsługa dużych powierzchni"
+      ],
+      "sales_notes": [
+        "trzeba ustalić lokalizację",
+        "trzeba ustalić powierzchnię lub długość odcinka",
+        "trzeba ustalić częstotliwość zlecenia",
+        "trzeba ustalić priorytet czasowy"
+      ],
+      "source_url": "https://topkop.pl/nasza-oferta/odsniezanie/"
+    },
+    {
+      "service_id": "topkop_roboty_rozbiorkowe",
+      "company_id": "topkop",
+      "name": "Roboty rozbiórkowe",
+      "category": "rozbiórki",
+      "search_keywords": [
+        "rozbiórk", "wyburzani", "gruz", "demontaż", "likwidacj",
+        "rozebranie", "wyburzenie", "burzen", "rozebr"
+      ],
+      "description": "Kompleksowe roboty rozbiórkowe wraz z uporządkowaniem terenu po pracach.",
+      "scope_of_work": [
+        "rozbiórka",
+        "wyburzanie",
+        "załadunek pozostałości",
+        "doprowadzenie terenu do porządku"
+      ],
+      "visual_examples_on_page": [
+        "wyburzanie",
+        "załadunek gruzu",
+        "załadunek betonu"
+      ],
+      "sales_notes": [
+        "trzeba ustalić rodzaj obiektu",
+        "trzeba ustalić wielkość obiektu",
+        "trzeba ustalić materiał konstrukcyjny",
+        "trzeba ustalić, czy wywóz odpadów jest po stronie wykonawcy",
+        "zawsze zapytać o warunki dojazdu"
+      ],
+      "source_url": "https://topkop.pl/nasza-oferta/roboty-rozbiorkowe/"
+    },
+    {
+      "service_id": "topkop_rurociagi_telekomunikacyjne",
+      "company_id": "topkop",
+      "name": "Budowa rurociągów telekomunikacyjnych",
+      "category": "telekomunikacja",
+      "search_keywords": [
+        "rurociąg", "telekomunikac", "światłowód",
+        "kabel", "optyczn", "pług", "sieć", "kanalizacj teletechn",
+        "miedzian", "pługoukładacz", "płużeni"
+      ],
+      "description": "Budowa sieci telekomunikacyjnych optycznych i miedzianych z wykorzystaniem wyspecjalizowanej kadry i sprzętu.",
+      "network_types": [
+        "optyczne",
+        "miedziane"
+      ],
+      "technology": [
+        "płużenie kabli światłowodowych",
+        "płużenie kabli miedzianych",
+        "pługoukładacz"
+      ],
+      "applications": [
+        "wzdłuż dróg lokalnych",
+        "wzdłuż dróg krajowych",
+        "przez pola uprawne",
+        "przez łąki",
+        "na terenach leśnych",
+        "na terenach trudno dostępnych",
+        "tam gdzie nie ma możliwości użycia ciężkiego sprzętu wykopowego"
+      ],
+      "advantages_declared": [
+        "szybka instalacja",
+        "wydajna instalacja",
+        "minimalna inwazyjność",
+        "brak potrzeby pełnego wykopu",
+        "mniejszy wpływ na środowisko",
+        "mniejszy wpływ na infrastrukturę drogową",
+        "mniejszy wpływ na infrastrukturę rolną"
+      ],
+      "sales_notes": [
+        "trzeba ustalić długość trasy",
+        "trzeba ustalić rodzaj kabla i osłon",
+        "trzeba ustalić warunki terenowe",
+        "trzeba ustalić, czy inwestycja ma projekt i uzgodnienia"
+      ],
+      "source_url": "https://topkop.pl/nasza-oferta/budowa-rurociagow-telekomunikacyjnych/"
+    },
+    {
+      "service_id": "rcm_konstrukcje_stalowe",
+      "company_id": "rcm",
+      "name": "Konstrukcje stalowe na zamówienie",
+      "category": "produkcja i usługi przemysłowe",
+      "search_keywords": [
+        "konstrukcj stalow", "konstrukcj metal", "stal", "metal",
+        "spawana konstrukcj", "konstrukcja na zamówieni",
+        "stalowa rama", "stelaż"
+      ],
+      "description": "Wykonywanie konstrukcji stalowych na zamówienie z naciskiem na precyzję i wytrzymałość.",
+      "related_services": [
+        "cięcie plazmą",
+        "spawanie",
+        "obróbka skrawaniem"
+      ],
+      "source_url": "https://rcmc.pl/uslugi"
+    },
+    {
+      "service_id": "rcm_ciecie_plazma",
+      "company_id": "rcm",
+      "name": "Cięcie plazmą",
+      "category": "obróbka materiału",
+      "search_keywords": [
+        "plazm", "cięcie", "blacha", "wypaln", "palnik",
+        "termiczn", "arkusz", "wycinani", "formatowani",
+        "cięcie stali", "cięcie metalu"
+      ],
+      "description": "Cięcie plazmowe realizowane na przecinarce plazmowej o konstrukcji bramowej.",
+      "machine_specification": {
+        "machine_type": "przecinarka plazmowa oparta na konstrukcji bramowej",
+        "portal_construction": "lekki i usztywniony profil",
+        "drive": "serwomechanizmy prądu przemiennego we wszystkich sześciu osiach",
+        "working_area_mm": {
+          "width": 3000,
+          "length": 12000
+        },
+        "heads": 2,
+        "heads_note": "dwie niezależnie pracujące głowice"
+      },
+      "torch_specification": {
+        "plasma_torch": "SCT",
+        "plasma_torch_features": [
+          "pojemnościowy czujnik odległości wbudowany w korpus",
+          "czujnik pomiaru napięcia łuku plazmowego"
+        ],
+        "oxy_fuel_torch_max_structural_steel_thickness_mm": 150
+      },
+      "advantages_declared": [
+        "wysoka prędkość cięcia",
+        "cięcie bez podgrzewania",
+        "szybkie przebijanie",
+        "wąska strefa wpływu ciepła",
+        "możliwość cięcia cienkich materiałów bez nadpalania",
+        "relatywnie niski koszt"
+      ],
+      "additional_technologies": [
+        {
+          "name": "OPTHole",
+          "purpose": "ograniczenie potrzeby wiercenia detali tam, gdzie nie jest wymagane"
+        },
+        {
+          "name": "Microjoint",
+          "purpose": "chwilowe obniżenie prądu i pozostawienie niewielkiego niedopalenia, aby ograniczyć falowanie detali po wypaleniu"
+        },
+        {
+          "name": "trasowanie liniowe i punktowe",
+          "purpose": "oznaczanie linii gięcia, spawania i punktów do rozwiercenia"
+        }
+      ],
+      "sales_notes": [
+        "trzeba ustalić materiał",
+        "trzeba ustalić grubość blachy",
+        "trzeba ustalić format arkusza",
+        "trzeba ustalić, czy potrzebne jest trasowanie lub dodatkowa obróbka"
+      ],
+      "source_url": "https://rcmc.pl/uslugi"
+    },
+    {
+      "service_id": "rcm_spawanie",
+      "company_id": "rcm",
+      "name": "Spawanie",
+      "category": "łączenie konstrukcji",
+      "search_keywords": [
+        "spawani", "spaw", "kontener", "aluminium",
+        "stal nierdzewn", "mig", "tig", "spawacz",
+        "łączeni", "zgrzewan"
+      ],
+      "description": "Spawanie elementów i konstrukcji stalowych oraz aluminiowych, w tym ram do kontenerów morskich.",
+      "materials": [
+        "stal konstrukcyjna",
+        "stal nierdzewna",
+        "aluminium"
+      ],
+      "products_examples": [
+        "elementy spawane",
+        "konstrukcje spawane",
+        "ramy do kontenerów morskich"
+      ],
+      "quality_and_certification": [
+        "PN-EN ISO 3834-2",
+        "EN 1090-1 EXC2 (wdrożenie w 2019 roku)"
+      ],
+      "sales_notes": [
+        "trzeba ustalić materiał",
+        "trzeba ustalić grubość",
+        "trzeba ustalić dokumentację techniczną",
+        "trzeba ustalić wymagania jakościowe"
+      ],
+      "source_url": "https://rcmc.pl/uslugi"
+    },
+    {
+      "service_id": "rcm_obrobka_skrawaniem",
+      "company_id": "rcm",
+      "name": "Obróbka skrawaniem",
+      "category": "obróbka mechaniczna",
+      "search_keywords": [
+        "frezow", "toczen", "wierceni", "gwintow",
+        "gięcie rur", "skrawani", "obróbka", "tokark", "frezark",
+        "regeneracj", "precyzyjn", "detal"
+      ],
+      "description": "Precyzyjna obróbka detali z dokładnością do 0,01 mm.",
+      "precision_mm": 0.01,
+      "operations": [
+        "frezowanie",
+        "toczenie",
+        "wiercenie",
+        "gwintowanie",
+        "gięcie rur",
+        "regeneracja otworów"
+      ],
+      "sales_notes": [
+        "trzeba ustalić detal i materiał",
+        "trzeba ustalić tolerancje",
+        "trzeba ustalić serię produkcyjną",
+        "trzeba ustalić, czy klient ma rysunek techniczny"
+      ],
+      "source_url": "https://rcmc.pl/uslugi"
+    }
+  ],
+  "global_sales_rules_for_gpt": {
+    "language": "pl",
+    "response_style": [
+      "zwięzły",
+      "profesjonalny",
+      "konkretny"
+    ],
+    "mandatory_flow": [
+      "potwierdź zrozumienie zapytania",
+      "podaj wycenę jeśli możliwa albo zadaj pytania uzupełniające",
+      "zawsze zapytaj o warunki dojazdu",
+      "jeśli dojazd jest trudny lub klient robi fundament/strop, rozważ zaproponowanie pompogruszki tylko wtedy, gdy dotyczy to oferty betonowej",
+      "nie zgaduj cen, jeśli brak danych to poinformuj, że trzeba sprawdzić u kierownika",
+      "zakończ wezwaniem do działania, np. rezerwacją terminu lub prośbą o dane do wyceny"
+    ],
+    "lead_fields_recommended": [
+      "nazwa usługi",
+      "lokalizacja",
+      "termin realizacji",
+      "zakres prac",
+      "wymiary / ilość / metraż / tonarz",
+      "rodzaj gruntu lub materiału",
+      "czy materiał jest po stronie klienta",
+      "czy transport jest potrzebny",
+      "warunki dojazdu",
+      "czy teren jest trudny / podmokły / wąski",
+      "czy jest dokumentacja / projekt / uzgodnienia"
+    ],
+    "materials_pricing": [
+      {
+        "location": "Osowa",
+        "items": [
+          {"name": "Piasek płukany 0-2", "price_per_ton": 6},
+          {"name": "Piasek siany 0-2/0-3", "price_per_ton": 6, "notes": "300-400 transport"},
+          {"name": "Pospółka 0-31,5", "price_per_ton": 12, "notes": "możliwe 14-16", "to_verify": true},
+          {"name": "Żwir płukany", "price_per_ton": 37},
+          {"name": "Kamień 16-32", "price_per_ton": 40},
+          {"name": "Ziemia", "price_per_ton": 10},
+          {"name": "Mieszanka 50 (C50/30)", "price_per_ton": 40},
+          {"name": "Kamień łamany/kruszony", "price_per_ton": 70}
+        ]
+      },
+      {
+        "location": "Gołdap",
+        "items": [
+          {"name": "Piasek płukany 0-2", "price_per_ton": 14, "transport": "700-800"},
+          {"name": "Piasek siany 0-2/0-3", "price_per_ton": 12, "transport": "500-600"},
+          {"name": "Pospółka 0-31,5", "price_per_ton": 20, "transport": "900 wywrotka"},
+          {"name": "Żwir 2-16", "price_per_ton": 40, "to_verify": true},
+          {"name": "Kamień 16-32", "price_per_ton": 70},
+          {"name": "Humus siany", "price_per_ton": 100, "transport": "1500 wywrotka"},
+          {"name": "Ziemia", "price_per_ton": 60, "transport": "1800 wywrotka"},
+          {"name": "Gruz kruszony/podbudowa", "price_per_ton": 50, "notes": "możliwe 40", "to_verify": true},
+          {"name": "Kamień łamany/kruszony", "price_per_ton": 100}
+        ]
+      },
+      {
+        "group_id": "beton_towarowy",
+        "name": "Beton towarowy – dostawa gruszką i pompogruszką",
+        "search_keywords": ["beton", "gruszk", "pompogruszk", "pompa", "c8/", "c12/", "c16/", "c20/", "c25/", "c30/", "podsypk", "wylewk"],
+        "delivery_note": "Ceny netto za m³, strefa 5–10 km od wytwórni. Każdy kolejny km powyżej 10 km: +7 zł/m³.",
+        "items": [
+          {"class": "C8/10",  "gruszka_pln_m3": 290, "pompogruszka_pln_m3": 310},
+          {"class": "C12/15", "gruszka_pln_m3": 300, "pompogruszka_pln_m3": 320},
+          {"class": "C16/20", "gruszka_pln_m3": 320, "pompogruszka_pln_m3": 340},
+          {"class": "C20/25", "gruszka_pln_m3": 330, "pompogruszka_pln_m3": 350},
+          {"class": "C25/30", "gruszka_pln_m3": 350, "pompogruszka_pln_m3": 370},
+          {"class": "C30/37", "gruszka_pln_m3": 370, "pompogruszka_pln_m3": 390}
+        ],
+        "surcharges": {
+          "extra_km_pln_m3": 7,
+          "pump_repositioning_pln": 100,
+          "polypropylene_fiber_pln_m3": 20,
+          "winter_heating_surcharge_pct": 15
+        },
+        "podsypki": [
+          {"name": "Podsypka 1:4",                          "price_pln_m3": 260},
+          {"name": "Zaprawa cementowo-piaskowa (cem/pia)",   "price_pln_m3": 190},
+          {"name": "Podsypka 1:3",                          "price_pln_m3": 290, "notes": "odbiór własny"},
+          {"name": "Podsypka 1:6",                          "price_pln_m3": 210}
+        ]
+      },
+      {
+        "group_id": "prefabrykaty",
+        "name": "Prefabrykaty betonowe",
+        "search_keywords": ["lego", "bloki lego", "bloki betonow", "piwniczk", "piwnica", "deszczówk", "deszczowk", "zbiornik", "płyta drogo", "plyta drogo", "krąg", "kręg", "kreg", "prefabrykat"],
+        "items": [
+          {"category": "Bloki Lego bez wzoru (C20/25)", "wymiary_cm": "60x60x60",   "cena_pln_szt": 170},
+          {"category": "Bloki Lego bez wzoru (C20/25)", "wymiary_cm": "90x60x60",   "cena_pln_szt": 200},
+          {"category": "Bloki Lego bez wzoru (C20/25)", "wymiary_cm": "120x60x60",  "cena_pln_szt": 240},
+          {"category": "Bloki Lego bez wzoru (C20/25)", "wymiary_cm": "180x60x60",  "cena_pln_szt": 310},
+          {"category": "Bloki Lego bez wzoru (C20/25)", "wymiary_cm": "240x60x60",  "cena_pln_szt": 390},
+          {"category": "Bloki Lego z wzorem (C20/25)",  "wymiary_cm": "60x60x60",   "cena_pln_szt": 190},
+          {"category": "Bloki Lego z wzorem (C20/25)",  "wymiary_cm": "120x60x60",  "cena_pln_szt": 260},
+          {"category": "Bloki Lego z wzorem (C20/25)",  "wymiary_cm": "180x60x60",  "cena_pln_szt": 330},
+          {"category": "Piwniczka betonowa",            "wymiary_cm": "280x220x240", "cena_pln_szt": 6300},
+          {"category": "Schody do piwniczki",           "wymiary_cm": "-",           "cena_pln_szt": 2500},
+          {"category": "Zbiornik na deszczówkę",        "wymiary_cm": "280x220x163", "cena_pln_szt": 4800},
+          {"category": "Płyta drogowa",                 "wymiary_cm": "300x150x15",  "cena_pln_szt": 620},
+          {"category": "Krąg betonowy Ø61",             "wymiary_cm": "61x80x6",     "cena_pln_szt": 300},
+          {"category": "Krąg betonowy Ø100",            "wymiary_cm": "100x100x10",  "cena_pln_szt": 500}
+        ]
+      }
+    ]
+  }
+}

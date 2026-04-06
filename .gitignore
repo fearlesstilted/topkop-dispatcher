@@ -1,0 +1,23 @@
+# Секреты — никогда не коммитить
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Виртуальные окружения
+venv/
+.venv/
+env/
+
+# Логи и данные (генерируются в рантайме)
+chat_log.txt
+marketing_leads.csv
+
+# IDE
+.vscode/
+.idea/
+*.swp

@@ -1,0 +1,22 @@
+potrzebuję beton c12 z pompą, jakieś 10 kubów
+16:01
+TK
+Zajmujemy się dostawą betonu z pompą. Ceny netto za m³ betonu C12/15 wraz z pompowaniem wynoszą 320 zł/m³. Za dostawę 10 m³ betonu C12/15 z pompą zapłacicie 3200 zł netto + 23% VAT = 3960 zł brutto.
+16:01
+Ty
+chcę zamówić bloki lego bez wzoru 120x60x60 i do tego schody do piwniczki
+16:02
+TK
+Zajmujemy się dostawą prefabrykatów betonowych. Cena za bloki Lego bez wzoru 120x60x60 to 240 zł/szt. Zamawiasz 1 sztukę, więc cena to 240 zł. Dodatkowo zamawiasz schody do piwniczki, które kosztują 2500 zł/szt. Zamawiasz 1 sztukę, więc cena to 2500 zł. W sumie zapłacicie 2740 zł netto + 23% VAT = 3374 zł brutto.
+16:02
+Ty
+ile kosztuje wynajem koparki na cały dzień?
+16:02
+TK
+[BLAD] Przekroczono limit API
+
+и тут еще посоветуйся со мной что и как над этой таской: 
+1. Проверь, есть ли в проекте файл `.gitignore`. Если нет — создай его и обязательно добавь туда `.env` и `__pycache__/`.
+2. Инициализируй Git репозиторий (`git init`).
+3. Добавь все файлы (`git add .`).
+4. Сделай коммит с сообщением: "feat: final RAG architecture with Markdown Context Stuffing, exact math and Sentry".
