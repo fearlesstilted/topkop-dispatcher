@@ -1,22 +1,53 @@
-potrzebuję beton c12 z pompą, jakieś 10 kubów
-16:01
-TK
-Zajmujemy się dostawą betonu z pompą. Ceny netto za m³ betonu C12/15 wraz z pompowaniem wynoszą 320 zł/m³. Za dostawę 10 m³ betonu C12/15 z pompą zapłacicie 3200 zł netto + 23% VAT = 3960 zł brutto.
-16:01
-Ty
-chcę zamówić bloki lego bez wzoru 120x60x60 i do tego schody do piwniczki
-16:02
-TK
-Zajmujemy się dostawą prefabrykatów betonowych. Cena za bloki Lego bez wzoru 120x60x60 to 240 zł/szt. Zamawiasz 1 sztukę, więc cena to 240 zł. Dodatkowo zamawiasz schody do piwniczki, które kosztują 2500 zł/szt. Zamawiasz 1 sztukę, więc cena to 2500 zł. W sumie zapłacicie 2740 zł netto + 23% VAT = 3374 zł brutto.
-16:02
-Ty
-ile kosztuje wynajem koparki na cały dzień?
-16:02
-TK
-[BLAD] Przekroczono limit API
+## ПЛАН ДЕПЛОЯ И СЛЕДУЮЩИЕ ШАГИ (консенсус Claude + Gemini)
 
-и тут еще посоветуйся со мной что и как над этой таской: 
-1. Проверь, есть ли в проекте файл `.gitignore`. Если нет — создай его и обязательно добавь туда `.env` и `__pycache__/`.
-2. Инициализируй Git репозиторий (`git init`).
-3. Добавь все файлы (`git add .`).
-4. Сделай коммит с сообщением: "feat: final RAG architecture with Markdown Context Stuffing, exact math and Sentry".
+---
+
+### СЛЕДУЮЩАЯ ЗАДАЧА — Production-ready (когда скажешь "газ")
+
+1. Убить CSV → Make.com вебхук:
+   - Удалить import csv, marketing_leads.csv, MARKETING_PATH
+   - Добавить import httpx + в requirements.txt
+   - В _marketing_worker: async POST на os.getenv("MAKE_WEBHOOK_URL") с JSON-пакетом
+     {"usluga", "miejscowosc", "ilosc", "intencja", "pilnosc", "segment", "jezyk"}
+   - Обернуть в try/except
+
+2. CORS для деплоя:
+   - В demo.launch() добавить cors_allowed_origins=["*"]
+   - Потом сузить до ["https://topkop.pl", "https://www.topkop.pl"]
+
+---
+
+### ROADMAP ДЕПЛОЯ
+
+Шаг 1 — Бэкенд (Мозг):
+  - Задеплоить app_web.py на HuggingFace Spaces (бесплатно, нативный Gradio)
+  - Или Render.com / Railway как альтернатива
+  - Secrets: GROQ_API_KEY, SENTRY_DSN, MAKE_WEBHOOK_URL
+  - Получить постоянный URL типа https://topkop-bot.hf.space
+
+Шаг 2 — Фронтенд (Виджет):
+  - widget.js минифицировать
+  - Положить в корень сайта босса через FTP / медиабиблиотеку WordPress
+  - Вставить одну строку в Footer сайта:
+    <script defer src="https://topkop.pl/widget.js" data-endpoint="https://topkop-bot.hf.space"></script>
+
+Шаг 3 — Make.com:
+  - Создать вебхук в Make.com
+  - MAKE_WEBHOOK_URL прописать в Secrets на HF Spaces
+  - Сценарий: Webhook → Google Sheets / Email / CRM
+
+---
+
+### ОТЛОЖЕНО (не для MVP)
+
+- Shadow DOM для widget.js (защита от CSS bleeding родительского сайта)
+  Причина: для MVP --tk- префиксы достаточны. Делать перед финальным деплоем.
+- Сужение CORS до конкретного домена — после получения продакшн URL
+
+---
+
+### ТЕХНИЧЕСКИЕ ДОЛГИ
+
+- config.py — мёртвый код, не импортируется. Удалить при следующем коммите.
+- HISTORY_LIMIT=4 — ок для TPM, но может ронять контекст длинных сделок. Мониторить.
+- asyncio.create_task в log_marketing — убедиться что task не теряется на HF Spaces.

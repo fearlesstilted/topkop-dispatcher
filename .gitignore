@@ -17,6 +17,12 @@ env/
 chat_log.txt
 marketing_leads.csv
 
+# Gradio runtime (сертификаты, кеш)
+.gradio/
+
+# Claude Code локальные настройки
+.claude/
+
 # IDE
 .vscode/
 .idea/
