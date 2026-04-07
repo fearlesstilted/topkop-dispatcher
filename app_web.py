@@ -94,7 +94,7 @@ _STRIP_KEYS = frozenset({
     "language", "last_compiled", "since", "nip", "related_services",
     "products_examples", "materials", "operations", "transport_scope",
     "materials_examples", "pricing_model", "sales_notes",  # дублируются в lead_fields
-    "special_notes", "precision_mm", "delivery_note",
+    "special_notes", "precision_mm",  # delivery_note ОСТАВЛЯЕМ — там +7 zł/km
     "response_style", "mandatory_flow",  # уже в system prompt текстом
     "lead_fields_recommended",  # уже в build_prompt как fields_block
 })
@@ -163,6 +163,7 @@ def build_prompt(kb: dict) -> str:
         "7. Ceny podawaj zawsze jako netto + 23% VAT.",
         "8. Beton licz w m3. Kruszywa, ziemię, piasek licz w tonach.",
         "9. POMPOGRUSZKA: Pompogruszka to cena całkowita za 1m³ betonu z usługą pompowania. NIE SUMUJ jej z ceną gruszki ani z niczym innym!",
+        "10. KALKULACJA CEN: Jeśli znasz cenę jednostkową i ilość, MOŻESZ podać orientacyjną kwotę łączną. ALE ZAWSZE dodaj: dopłaty za km powyżej 10 km (+7 zł/m³), ewentualną zimową dopłatę (+15%), przestawienie pompy (+100 zł). Zakończ: 'Dokładną wycenę potwierdzi kierownik'.",
         "",
         "## PRIORYTETY ZBIERANIA LEADA",
         fields_block,
@@ -377,13 +378,11 @@ def make_respond(kb: dict, client: AsyncOpenAI):
 
         async for chunk in call_llm_stream(client, system, openai_msgs):
             full_answer += chunk
-            # Clean accumulated text on every chunk (catches 8b artifacts mid-stream)
-            clean_answer = extract_text(full_answer)
-            updated[-1]["content"] = clean_answer
+            updated[-1]["content"] = full_answer
             yield "", updated
             await asyncio.sleep(0.01)  # Non-blocking smooth typing effect
 
-        # Final yield with guaranteed clean text
+        # extract_text только на финале — страховка от редких артефактов 70b
         final_answer = extract_text(full_answer)
         updated[-1]["content"] = final_answer
         yield "", updated
