@@ -27,3 +27,19 @@ marketing_leads.csv
 .vscode/
 .idea/
 *.swp
+
+# Бэкапы
+_backup_*/
+
+# Old bot folder (binaries)
+исход+старый бот/
+
+# Backup folders
+_backup_*/
+
+# Price PDFs
+ceny/
+
+# Misc
+f/
+praca/

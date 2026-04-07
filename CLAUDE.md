@@ -11,9 +11,11 @@ TOPKOP RAG Dispatcher — веб-виджет для сайта строител
 
 # Стек технологий
 - Python 3.10+, Gradio 6 (UI виджета, потоковый вывод SSE)
-- AsyncOpenAI API (строго LLaMA-3 через Groq)
-- Make.com (интеграция через `requests`)
+- AsyncOpenAI API (строго LLaMA-3 через Groq): основная llama-3.3-70b-versatile, маркетинг llama-3.1-8b-instant
+- httpx (async HTTP для Make.com webhook, НЕ requests)
+- Make.com webhook → Google Sheets + Telegram менеджеру
 - База знаний: локальный `KnowledgeTopKop.json`
+- Shadow DOM виджет (widget.js) — изоляция от CSS сайта клиента
 
 # Жесткие архитектурные правила (НЕ НАРУШАТЬ)
 1. **Только Async:** Сервер на Gradio должен держать несколько клиентов. Запрещено использовать синхронные вызовы `client.chat.completions`. Переписать всё на `AsyncOpenAI`, `async def`, `await`.
@@ -23,4 +25,6 @@ TOPKOP RAG Dispatcher — веб-виджет для сайта строител
 
 # Воркфлоу в Claude Code
 - Зависимость `gradio` должна быть добавлена в `requirements.txt`.
-- Перед любым редактированием файлов запрашивай мое подтверждение (Visual diff review).
+- Баг-фиксы и мелкие правки — делать сразу без подтверждения. Крупные рефакторинги — показать diff перед правкой.
+- CLAUDE.md обновлять самостоятельно каждые ~12 промптов: выжимка новых фактов о бизнесе/стеке/решениях.
+- Задавать вопросы по бизнесу и продукту проактивно — пользователь поощряет совместное мышление.

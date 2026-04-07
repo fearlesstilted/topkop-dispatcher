@@ -1,16 +1,16 @@
 /**
- * TOP KOP Chat Widget v3.0
+ * TOP KOP Chat Widget v4.0
  * Vanilla JS — no dependencies.
  * Connects to Gradio 6 backend via Queue API (SSE streaming).
  *
- * Changes vs v2:
- *   - All API paths updated to /gradio_api/ prefix (Gradio 6 requirement)
- *   - GRADIO_AUTH removed (auth was removed from backend; EventSource can't send auth headers anyway)
- *   - Uses api_name: "chat" instead of fn_index (stable, rename-proof)
- *   - SSE parser updated for Gradio 6 nested payload structure
+ * Changes vs v3:
+ *   - Shadow DOM — виджет изолирован от CSS родительского сайта (WordPress/Webflow)
+ *   - Баг-фикс: raw[0]?.text → raw.map(b=>b?.text??'').join('') (Gradio 6.11 контент-блоки)
+ *   - Quick replies удалены (owner decision)
+ *   - Google Fonts инжектируется в <head>, а не в shadow (cross-origin @import)
  *
  * Usage:
- *   <script src="widget.js" data-endpoint="https://your-gradio-share.live"></script>
+ *   <script defer src="widget.js" data-endpoint="https://your-gradio-share.live"></script>
  */
 
 (function () {
@@ -22,7 +22,7 @@
     (currentScript && currentScript.dataset.endpoint) ||
     "http://127.0.0.1:7860";
 
-  const FN_INDEX = 0;  // fn_index более совместим с разными версиями Gradio
+  const FN_INDEX = 0;
   const TYPING_DELAY_MS = 600;
 
   /* ─── STATE ──────────────────────────────────────────────────────────────── */
@@ -30,11 +30,9 @@
   let isWaiting   = false;
   let sessionHash = Math.random().toString(36).slice(2);
 
-  /* ─── STYLES ─────────────────────────────────────────────────────────────── */
+  /* ─── STYLES (живут внутри Shadow DOM) ──────────────────────────────────── */
   const CSS = `
-    @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@700&display=swap');
-
-    :root {
+    :host {
       --tk-orange:     #e07b00;
       --tk-orange-dim: #c46d00;
       --tk-dark:       #1a1a1a;
@@ -276,28 +274,6 @@
       40%         { transform: translateY(-6px); background: var(--tk-orange); }
     }
 
-    /* Quick replies */
-    #tk-quick {
-      padding: 0 12px 10px;
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      flex-shrink: 0;
-    }
-    .tk-qbtn {
-      font-family: var(--tk-font);
-      font-size: 11.5px;
-      border: 1px solid var(--tk-orange);
-      color: var(--tk-orange);
-      background: transparent;
-      border-radius: 20px;
-      padding: 5px 11px;
-      cursor: pointer;
-      transition: background .15s, color .15s;
-      white-space: nowrap;
-    }
-    .tk-qbtn:hover { background: var(--tk-orange); color: #fff; }
-
     /* Input area */
     #tk-footer {
       border-top: 1px solid var(--tk-border);
@@ -362,19 +338,27 @@
     }
   `;
 
-  /* ─── QUICK REPLIES ──────────────────────────────────────────────────────── */
-  const QUICK = [
-    "Ceny kruszywa",
-    "Wynajem koparki",
-    "Transport piasku",
-    "Przecisk pod drogą",
-  ];
-
-  /* ─── DOM BUILDER ────────────────────────────────────────────────────────── */
+  /* ─── DOM BUILDER (Shadow DOM) ───────────────────────────────────────────── */
   function buildWidget() {
-    const style = document.createElement("style");
-    style.textContent = CSS;
-    document.head.appendChild(style);
+    // Шрифт грузим в основной документ — @import в shadow root блокируется в ряде браузеров
+    if (!document.querySelector("#tk-font-link")) {
+      const link = document.createElement("link");
+      link.id   = "tk-font-link";
+      link.rel  = "stylesheet";
+      link.href = "https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@700&display=swap";
+      document.head.appendChild(link);
+    }
+
+    // Host — пустой div, якорь для Shadow root
+    const host = document.createElement("div");
+    document.body.appendChild(host);
+
+    // Shadow root изолирует все наши стили от CSS родительского сайта
+    const shadow = host.attachShadow({ mode: "open" });
+
+    const styleEl = document.createElement("style");
+    styleEl.textContent = CSS;
+    shadow.appendChild(styleEl);
 
     // FAB button
     const fab = document.createElement("button");
@@ -392,7 +376,6 @@
     win.className = "tk-hidden";
     win.setAttribute("role", "dialog");
     win.setAttribute("aria-label", "Czat TOP KOP");
-
     win.innerHTML = `
       <div id="tk-header">
         <div id="tk-header-avatar">
@@ -426,8 +409,6 @@
         </div>
       </div>
 
-      <div id="tk-quick"></div>
-
       <div id="tk-footer">
         <textarea id="tk-input" rows="1" placeholder="Napisz zapytanie..." aria-label="Wpisz wiadomość"></textarea>
         <button id="tk-send" aria-label="Wyślij">
@@ -438,14 +419,13 @@
       </div>
     `;
 
-    document.body.appendChild(fab);
-    document.body.appendChild(win);
+    shadow.appendChild(fab);
+    shadow.appendChild(win);
 
     return {
       fab, win,
       messages:   win.querySelector("#tk-messages"),
       typing:     win.querySelector("#tk-typing"),
-      quickBar:   win.querySelector("#tk-quick"),
       input:      win.querySelector("#tk-input"),
       send:       win.querySelector("#tk-send"),
       close:      win.querySelector("#tk-close"),
@@ -486,17 +466,6 @@
     el.appendChild(row);
     el.scrollTop = el.scrollHeight;
     return bubble; // returned for live streaming updates
-  }
-
-  function buildQuickReplies(el, onSend) {
-    el.innerHTML = "";
-    QUICK.forEach((q) => {
-      const btn = document.createElement("button");
-      btn.className = "tk-qbtn";
-      btn.textContent = q;
-      btn.addEventListener("click", () => onSend(q));
-      el.appendChild(btn);
-    });
   }
 
   function setStatus(dot, textEl, state) {
@@ -560,8 +529,6 @@
     }
 
     // ── 2. Subscribe to SSE stream ────────────────────────────────────────────
-    // No auth headers here — EventSource API does not support custom headers.
-    // Auth was removed from the backend for this reason.
     const evtUrl = `${ENDPOINT}/gradio_api/queue/data?session_hash=${sessionHash}`;
     const evtSource = new EventSource(evtUrl);
     let doneFired = false;
@@ -588,8 +555,11 @@
           if (Array.isArray(historyArr) && historyArr.length > 0) {
             const lastMsg = historyArr[historyArr.length - 1];
             const raw = lastMsg?.content ?? "";
-            // Gradio 6.11 may return content as [{type,text}] or plain string
-            const text = Array.isArray(raw) ? (raw[0]?.text ?? "") : raw;
+            // Gradio 6.11 может вернуть content как массив блоков [{type,text},...].
+            // Берём ВСЕ блоки и склеиваем — иначе покажем только первый символ.
+            const text = Array.isArray(raw)
+              ? raw.map((b) => b?.text ?? "").join("")
+              : raw;
             if (text) onChunk(text);
           }
         } catch (_) {}
@@ -606,10 +576,16 @@
             // Sync local widget history with Gradio's authoritative state
             chatHistory = historyArr.map((m) => {
               const c = m.content || "";
-              return { role: m.role, content: Array.isArray(c) ? (c[0]?.text ?? "") : c };
+              // Та же логика: склеиваем все блоки если content — массив
+              const text = Array.isArray(c)
+                ? c.map((b) => b?.text ?? "").join("")
+                : c;
+              return { role: m.role, content: text };
             });
             const rawFinal = historyArr[historyArr.length - 1]?.content || "";
-            const finalText = Array.isArray(rawFinal) ? (rawFinal[0]?.text ?? "") : rawFinal;
+            const finalText = Array.isArray(rawFinal)
+              ? rawFinal.map((b) => b?.text ?? "").join("")
+              : rawFinal;
             onDone(finalText);
           } else {
             onDone("");
@@ -653,7 +629,11 @@
       "bot",
       "Witam! Jestem dyspozytorem TOP KOP. W czym mogę pomóc? Oferujemy roboty ziemne, transport kruszywa, wynajem sprzętu i wiele więcej."
     );
-    buildQuickReplies(UI.quickBar, sendMessage);
+
+    // Глобальный хук — кнопки на сайте могут вызвать window.tkOpen() напрямую
+    // (Shadow DOM скрывает #tk-fab от document.getElementById)
+    window.tkOpen  = () => openChat();
+    window.tkClose = () => closeChat();
 
     function openChat() {
       isOpen = true;
@@ -673,6 +653,7 @@
     UI.fab.addEventListener("click", () => (isOpen ? closeChat() : openChat()));
     UI.close.addEventListener("click", closeChat);
 
+    // Escape закрывает — событие идёт от document, пробивает shadow boundary
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && isOpen) closeChat();
     });
@@ -704,7 +685,6 @@
       UI.input.style.height = "auto";
 
       appendMessage(UI.messages, "user", text);
-      UI.quickBar.innerHTML = ""; // hide quick replies after first message
 
       chatHistory.push({ role: "user", content: text });
 
@@ -728,7 +708,7 @@
             UI.typing.classList.remove("visible");
             botBubble = appendMessage(UI.messages, "bot", partialText);
           } else if (botBubble) {
-            botBubble.textContent = partialText; // replace with full accumulated text
+            botBubble.textContent = partialText; // заменяем полным накопленным текстом
             UI.messages.scrollTop = UI.messages.scrollHeight;
           }
         },

@@ -257,7 +257,7 @@
         przeciski pod drogami — wycena natychmiast.
       </p>
       <div class="hero-cta">
-        <button class="btn-primary" onclick="document.getElementById('tk-fab').click()">
+        <button class="btn-primary" onclick="window.tkOpen && window.tkOpen()">
           Zapytaj dyspozytora →
         </button>
         <button class="btn-outline">+48 87 520 10 03</button>
@@ -314,7 +314,8 @@
       data-endpoint → URL запущенного Gradio (share или локальный)
     ═══════════════════════════════════════════════════════
   -->
-  <script src="widget.js" data-endpoint="https://2c39a162d31840f480.gradio.live"></script>
+  <!-- data-endpoint: при деплое заменить на URL HF Space / Render -->
+  <script src="widget.js" data-endpoint="https://dd174c8423c506571f.gradio.live"></script>
 
 </body>
 </html>

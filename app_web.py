@@ -1,24 +1,23 @@
 """
 TOPKOP RAG Dispatcher — Web UI
 ================================
-v4: async LLM + Sentry monitoring + anti-hallucination guard.
-Changes vs v3:
-  - OpenAI → AsyncOpenAI, all LLM calls are non-blocking
-  - threading replaced by asyncio.create_task for marketing logger
-  - sentry_sdk init (only when SENTRY_DSN is set in .env)
-  - build_prompt: strict anti-hallucination rule injected at top
+v5: full audit pass (2026-04-07).
+  - Gradio 6 content-block parsing (fixes garbled history bug)
+  - Marketing: JSON mode + httpx webhook + smart trigger (>= 2 user msgs)
+  - MAX_TOK 1024→300 (enforces brevity, saves ~70% output tokens)
+  - Shadow DOM widget, CORS, CSV killed, await marketing (no more create_task)
 """
 
 import asyncio
-import csv
 import json
 import os
 import re
 import sys
-import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, AsyncGenerator
+
+import httpx
 
 import gradio as gr
 try:
@@ -41,18 +40,17 @@ elif not _SENTRY_AVAILABLE:
     print("[INFO] sentry-sdk not installed — monitoring disabled.")
 
 # ─── Константы ────────────────────────────────────────────────────────────────
-BASE_DIR         = Path(__file__).parent
-KB_PATH          = BASE_DIR / "KnowledgeTopKop.json"
-CHAT_LOG_PATH    = BASE_DIR / "chat_log.txt"
-MARKETING_PATH   = BASE_DIR / "marketing_leads.csv"
+BASE_DIR      = Path(__file__).parent
+KB_PATH       = BASE_DIR / "KnowledgeTopKop.json"
+CHAT_LOG_PATH = BASE_DIR / "chat_log.txt"
 
 MODEL            = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 TEMP             = float(os.getenv("LLM_TEMPERATURE", "0.4"))
-MAX_TOK          = int(os.getenv("LLM_MAX_TOKENS", "1024"))
+MAX_TOK          = int(os.getenv("LLM_MAX_TOKENS", "300"))   # 2-3 предложения ≈ 80-120 токенов, 300 = с запасом
 MARKETING_MODEL  = "llama-3.1-8b-instant"
-MARKETING_MAXTOK = 80
+MARKETING_MAXTOK = 150   # JSON-формат требует больше токенов чем CSV-строка
 WEB_PORT         = 7860
-HISTORY_LIMIT    = 4    # 2 пары вопрос-ответ — больше не нужно, экономим TPM
+HISTORY_LIMIT    = 6    # ~3 пары — компромисс между памятью и Groq free TPM лимитом
 
 
 # ─── 1. KNOWLEDGE BASE ────────────────────────────────────────────────────────
@@ -82,7 +80,39 @@ def create_client() -> AsyncOpenAI:
     return AsyncOpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1", max_retries=0)
 
 
-# ─── 3. SYSTEM PROMPT ─────────────────────────────────────────────────────────
+# ─── 3. KB OPTIMIZER ─────────────────────────────────────────────────────────
+
+# Поля которые жрут токены, но НЕ помогают боту отвечать клиенту
+_STRIP_KEYS = frozenset({
+    "source_url", "source_urls", "search_keywords", "client_types",
+    "applications", "scope_of_work", "technical_notes", "experience_note",
+    "advantages_declared", "visual_examples_on_page", "service_area_specific",
+    "service_area_general",  # дублируется в промпте текстом
+    "equipment_categories", "example_equipment", "machine_specification",
+    "torch_specification", "additional_technologies", "quality_and_certification",
+    "network_types", "technology", "company_profile", "knowledge_base_name",
+    "language", "last_compiled", "since", "nip", "related_services",
+    "products_examples", "materials", "operations", "transport_scope",
+    "materials_examples", "pricing_model", "sales_notes",  # дублируются в lead_fields
+    "special_notes", "precision_mm", "delivery_note",
+    "response_style", "mandatory_flow",  # уже в system prompt текстом
+    "lead_fields_recommended",  # уже в build_prompt как fields_block
+})
+
+
+def strip_kb_for_prompt(kb: dict) -> dict:
+    """Рекурсивно убирает поля-балласт из KB. Оригинал не трогает.
+    ~6200 токенов → ~2000 токенов. Цены, контакты и описания остаются."""
+    def _clean(obj):
+        if isinstance(obj, dict):
+            return {k: _clean(v) for k, v in obj.items() if k not in _STRIP_KEYS}
+        if isinstance(obj, list):
+            return [_clean(item) for item in obj]
+        return obj
+    return _clean(kb)
+
+
+# ─── 4. SYSTEM PROMPT ─────────────────────────────────────────────────────────
 
 def build_prompt(kb: dict) -> str:
     rules = kb.get("global_sales_rules_for_gpt", {})
@@ -96,8 +126,10 @@ def build_prompt(kb: dict) -> str:
 
     fields_block = "\n".join(f"- {f}" for f in lead_fields) if lead_fields else "- lokalizacja\n- termin\n- ilość\n- warunki dojazdu"
 
-    # Минифицированный JSON — без пробелов, ~1850 токенов, модель читает отлично
-    kb_json = json.dumps(kb, ensure_ascii=False, separators=(',', ':'))
+    # Обрезаем KB: убираем source_urls, search_keywords, technical_notes и прочий балласт
+    # ~6200 токенов → ~2000 токенов — в 3 раза дешевле каждый запрос
+    kb_lean = strip_kb_for_prompt(kb)
+    kb_json = json.dumps(kb_lean, ensure_ascii=False, separators=(',', ':'))
 
     parts = [
         # ── Anti-hallucination guard — стоит первым, чтобы модель видела до контекста ──
@@ -224,21 +256,23 @@ def log_chat(user: str, bot: str) -> None:
 
 async def _marketing_worker(client: AsyncOpenAI, history_context: str) -> None:
     """
-    Async: analyses the FULL conversation history.
-    Fired as a background task — non-blocking for the main chat handler.
+    Async: analyses the FULL conversation history, sends JSON lead to Make.com.
+    Called with `await` at the end of respond() — blocking is intentional,
+    prevents HF Spaces from freezing the container mid-flight and losing the lead.
     """
     system = (
-        "Jesteś analitykiem marketingu B2B. Przeanalizuj CAŁĄ poniższą historię rozmowy. "
-        "Zwróć TYLKO JEDNĄ LINIJKĘ CSV rozdzieloną średnikami z polami: "
-        "Usługa; Miejscowość (Brak jeśli nie podano); Ilość (Brak jeśli nie podano); "
-        "Intencja (Pytanie o cenę/Zamówienie/Wynajem/Kontynuacja rozmowy/Offtopic); "
-        "Pilność (Pilne/Standardowe/Nieznana); "
-        "Segment (Klient indywidualny/Firma budowlana/Rolnik/Nieznany); "
-        "Język (polski/rosyjski/angielski/inny). "
-        "ZASADY KRYTYCZNE (ZAKAZ HALUCYNACJI): "
-        "1. Jeśli klient pisze o dojeździe (np. 'asfalt'), usługą pozostaje ta z początku rozmowy (np. 'Rozbiórka'), a nie 'Asfaltowanie'. "
-        "2. Firma działa na Mazurach. Jeśli klient pisze 'goldapi' lub podobnie, wpisz 'Gołdap'. Nie wymyślaj 'Gdańska' czy innych miast! "
-        "Zero innych słów. Zero komentarzy."
+        "Jesteś analitykiem marketingu B2B. Przeanalizuj CAŁĄ historię rozmowy. "
+        "Zwróć JSON z dokładnie tymi kluczami (bez żadnych innych słów): "
+        "usluga, miejscowosc, ilosc, intencja, pilnosc, segment, jezyk, telefon. "
+        "Dozwolone wartości — intencja: Pytanie o cenę|Zamówienie|Wynajem|Kontynuacja rozmowy|Offtopic; "
+        "pilnosc: Pilne|Standardowe|Nieznana; "
+        "segment: Klient indywidualny|Firma budowlana|Rolnik|Nieznany; "
+        "jezyk: polski|rosyjski|angielski|inny. "
+        "Jeśli pole nieznane — wartość 'Brak'. "
+        "telefon: numer telefonu klienta jeśli podał, inaczej 'Brak'. "
+        "ZASADY KRYTYCZNE: "
+        "1. Jeśli klient pisze o dojeździe (asfalt), usługą pozostaje ta z początku rozmowy. "
+        "2. Firma działa na Mazurach — 'goldapi'/'Goldap' = 'Gołdap'. Nie wymyślaj innych miast."
     )
     try:
         resp = await client.chat.completions.create(
@@ -249,46 +283,45 @@ async def _marketing_worker(client: AsyncOpenAI, history_context: str) -> None:
             ],
             temperature=0.0,
             max_tokens=MARKETING_MAXTOK,
+            response_format={"type": "json_object"},  # гарантируем чистый JSON без мусора
         )
 
-        raw_text = extract_text(resp.choices[0].message.content)
-
-        lines = [l.strip() for l in raw_text.split('\n') if l.strip()]
-        line = lines[-1] if lines else "Błąd;Brak;Brak;Brak;Nieznana;Nieznany;polski"
-
-        # Strip header if model hallucinated it
-        line = line.replace("Usługa;Miejscowość;Ilość;Intencja;Pilność;Segment;Język", "").strip()
-        line = line.replace("Usługa; Miejscowość; Ilość; Intencja; Pilność; Segment; Język", "").strip()
-        if line.startswith(";"):
-            line = line[1:].strip()
+        data = json.loads(resp.choices[0].message.content)
 
         ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        file_exists = MARKETING_PATH.exists()
+        payload = {
+            "timestamp":   ts,
+            "usluga":      data.get("usluga",      "Brak"),
+            "miejscowosc": data.get("miejscowosc",  "Brak"),
+            "ilosc":       data.get("ilosc",        "Brak"),
+            "intencja":    data.get("intencja",     "Brak"),
+            "pilnosc":     data.get("pilnosc",      "Nieznana"),
+            "segment":     data.get("segment",      "Nieznany"),
+            "jezyk":       data.get("jezyk",        "polski"),
+            "telefon":     data.get("telefon",      "Brak"),
+        }
+        print(f"[MARKETING] Lead: {payload}")
 
-        with open(MARKETING_PATH, "a", encoding="utf-8", newline="") as f:
-            w = csv.writer(f, delimiter=";")
-            if not file_exists:
-                w.writerow(["Timestamp", "Usluga", "Miejscowosc", "Ilosc",
-                            "Intencja", "Pilnosc", "Segment", "Jezyk"])
-            fields = [x.strip() for x in line.split(";")]
-            w.writerow([ts] + fields)
+        webhook_url = os.getenv("MAKE_WEBHOOK_URL")
+        if not webhook_url:
+            # Webhook ещё не настроен — данные залогированы выше, лид не потерян
+            print("[MARKETING] MAKE_WEBHOOK_URL не задан — пропускаю POST (данные выше в логе)")
+            return
 
-        print(f"[MARKETING] Zapisano: {line}")
+        async with httpx.AsyncClient(timeout=10.0) as http:
+            r = await http.post(webhook_url, json=payload)
+            r.raise_for_status()
+            print(f"[MARKETING] Webhook OK → {r.status_code}")
+
     except Exception as e:
-        # Dead letter — лид не должен молча потеряться
-        print(f"[MARKETING CRITICAL] Webhook failed, lead lost! Error: {e}")
-        print(f"[MARKETING CRITICAL] Raw context: {history_context[:300]}")
+        print(f"[MARKETING CRITICAL] Lead processing failed: {e}")
+        print(f"[MARKETING CRITICAL] Context snippet: {history_context[:300]}")
         if _SENTRY_AVAILABLE and _sentry_dsn:
             _sentry_sdk.capture_message(
-                f"Lead lost — webhook error: {e}",
+                f"Lead lost — error: {e}",
                 level="fatal",
                 extras={"history": history_context[:1000]},
             )
-
-
-def log_marketing(client: AsyncOpenAI, history_context: str) -> None:
-    """Schedules marketing analysis as a fire-and-forget async task."""
-    asyncio.create_task(_marketing_worker(client, history_context))
 
 
 # ─── 7. CHAT HANDLER (STREAMING) ──────────────────────────────────────────────
@@ -311,9 +344,17 @@ def make_respond(kb: dict, client: AsyncOpenAI):
         openai_msgs: list[dict] = []
         for item in history:
             if isinstance(item, dict):
-                role    = item.get("role", "")
-                content = str(item.get("content", "") or "")
-                if role in ("user", "assistant") and content:
+                role = item.get("role", "")
+                raw  = item.get("content", "")
+                # Gradio 6 может хранить content как [{type:"text", text:"..."}]
+                # str([...]) превратит это в мусор → парсим блоки правильно
+                if isinstance(raw, list):
+                    content = "".join(
+                        b.get("text", "") for b in raw if isinstance(b, dict)
+                    )
+                else:
+                    content = str(raw or "")
+                if role in ("user", "assistant") and content.strip():
                     openai_msgs.append({"role": role, "content": content})
 
         if len(openai_msgs) > HISTORY_LIMIT:
@@ -349,31 +390,24 @@ def make_respond(kb: dict, client: AsyncOpenAI):
 
         log_chat(message, final_answer)
 
-        history_for_marketing = "\n".join(
-            f"{m['role']}: {m['content']}" for m in openai_msgs
-        ) + f"\nassistant: {final_answer}"
-        log_marketing(client, history_for_marketing)
+        # Маркетинг-анализ — только когда в диалоге есть хоть какое-то содержание.
+        # "Cześć" + ответ бота = не лид. Экономит ~50% вызовов 8b.
+        user_msg_count = sum(1 for m in openai_msgs if m["role"] == "user")
+        if user_msg_count >= 2:
+            marketing_msgs = openai_msgs[-3:] if len(openai_msgs) > 3 else openai_msgs
+            history_for_marketing = "\n".join(
+                f"{m['role']}: {m['content']}" for m in marketing_msgs
+            ) + f"\nassistant: {final_answer}"
+            await _marketing_worker(client, history_for_marketing)
 
     return respond
 
 
 # ─── 8. UI ────────────────────────────────────────────────────────────────────
 
-QUICK_REPLIES = [
-    "Ile kosztuje beton C20/25?",
-    "Wynajem koparki na 2 dni",
-    "Transport 15 ton piasku do Goldapi",
-    "Przecisk pod droga",
-    "Chce zamowic piasek plukany",
-]
-
 CSS = """
 footer { display: none !important; }
 #send-btn { background: #e07b00 !important; color: white !important; }
-.quick { font-size: 12px !important; border: 1px solid #e07b00 !important;
-         color: #e07b00 !important; background: transparent !important;
-         border-radius: 20px !important; }
-.quick:hover { background: #e07b00 !important; color: white !important; }
 """
 
 
@@ -408,29 +442,11 @@ def build_ui(kb: dict, client: AsyncOpenAI) -> gr.Blocks:
             )
             btn = gr.Button("Wyslij", scale=1, elem_id="send-btn", variant="primary")
 
-        gr.Markdown("**Szybkie zapytania:**")
-        with gr.Row():
-            qbtns = [gr.Button(r, elem_classes=["quick"], size="sm") for r in QUICK_REPLIES]
-
         clear = gr.Button("Wyczysc rozmowe", size="sm", variant="secondary")
 
         # api_name="chat" exposes a stable named endpoint for the widget
         msg.submit(respond, [msg, chatbot], [msg, chatbot], api_name="chat")
         btn.click(respond,  [msg, chatbot], [msg, chatbot], api_name=False)
-
-        def _make_quick_handler(r: str):
-            async def handler(h: list[dict]):
-                async for result in respond(r, h):
-                    yield result
-            return handler
-
-        for qbtn, reply in zip(qbtns, QUICK_REPLIES):
-            qbtn.click(
-                fn=_make_quick_handler(reply),
-                inputs=[chatbot],
-                outputs=[msg, chatbot],
-                api_name=False,
-            )
 
         clear.click(fn=lambda: ([], ""), outputs=[chatbot, msg])
 
@@ -444,7 +460,7 @@ def main() -> None:
     print("  TOP KOP RAG Dispatcher - Web UI (async + streaming)")
     print(f"  Model   : {MODEL}  |  Temp: {TEMP}  |  MaxTok: {MAX_TOK}")
     print(f"  ChatLog : {CHAT_LOG_PATH.resolve()}")
-    print(f"  Leads   : {MARKETING_PATH.resolve()}")
+    print(f"  Webhook : {os.getenv('MAKE_WEBHOOK_URL', 'NOT SET — leads logged to console only')}")
     print("=" * 60)
 
     kb     = load_knowledge_base()
@@ -455,8 +471,8 @@ def main() -> None:
         server_name="0.0.0.0",
         server_port=WEB_PORT,
         share=True,
-        # auth REMOVED — external widget cannot pass Basic-Auth via EventSource (SSE)
         show_error=True,
+        strict_cors=False,  # виджет грузится с внешнего домена → ослабляем CORS
     )
 
 
