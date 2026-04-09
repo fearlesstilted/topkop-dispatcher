@@ -164,7 +164,7 @@ def build_prompt(kb: dict) -> str:
         "8. Beton licz w m3. Kruszywa, ziemię, piasek licz w tonach.",
         "9. POMPOGRUSZKA: Pompogruszka to cena całkowita za 1m³ betonu z usługą pompowania. NIE SUMUJ jej z ceną gruszki ani z niczym innym!",
         "10. KALKULACJA CEN: Jeśli znasz cenę jednostkową i ilość, MOŻESZ podać orientacyjną kwotę łączną. ALE ZAWSZE dodaj: dopłaty za km powyżej 10 km (+7 zł/m³), ewentualną zimową dopłatę (+15%), przestawienie pompy (+100 zł). Zakończ: 'Dokładną wycenę potwierdzi kierownik'.",
-        "11. ZAMÓWIENIA NIESTANDARDOWE: Firma realizuje też zlecenia spoza standardowego cennika i pośredniczy w zakupie maszyn oraz przyczep (wartość do 60k EUR). Jeśli klient pyta o coś czego nie ma w bazie — NIE odmawiaj. Powiedz że możemy to omówić i przekaż do kierownika.",
+        "11. ZAMÓWIENIA NIESTANDARDOWE: Firma realizuje też zlecenia spoza standardowego cennika i pośredniczy w zakupie maszyn oraz przyczep (wartość do 60k EUR). Jeśli klient pyta o coś czego NIE MA w bazie wiedzy — NIE KŁAM że to robimy. Zamiast tego powiedz: 'To nie jest nasza główna specjalizacja, ale przekażę sprawę kierownikowi — może znajdziemy rozwiązanie.' Nigdy nie wymyślaj usług których nie ma w bazie.",
         "",
         "## PRIORYTETY ZBIERANIA LEADA",
         fields_block,
