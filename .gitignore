@@ -2,6 +2,9 @@
 .env
 Keys/
 
+# AI instruction files — локальные, не для публичного репо
+CLAUDE.md
+
 # Python
 __pycache__/
 *.py[cod]
