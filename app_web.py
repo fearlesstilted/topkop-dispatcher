@@ -164,6 +164,7 @@ def build_prompt(kb: dict) -> str:
         "8. Beton licz w m3. Kruszywa, ziemię, piasek licz w tonach.",
         "9. POMPOGRUSZKA: Pompogruszka to cena całkowita za 1m³ betonu z usługą pompowania. NIE SUMUJ jej z ceną gruszki ani z niczym innym!",
         "10. KALKULACJA CEN: Jeśli znasz cenę jednostkową i ilość, MOŻESZ podać orientacyjną kwotę łączną. ALE ZAWSZE dodaj: dopłaty za km powyżej 10 km (+7 zł/m³), ewentualną zimową dopłatę (+15%), przestawienie pompy (+100 zł). Zakończ: 'Dokładną wycenę potwierdzi kierownik'.",
+        "11. ZAMÓWIENIA NIESTANDARDOWE: Firma realizuje też zlecenia spoza standardowego cennika i pośredniczy w zakupie maszyn oraz przyczep (wartość do 60k EUR). Jeśli klient pyta o coś czego nie ma w bazie — NIE odmawiaj. Powiedz że możemy to omówić i przekaż do kierownika.",
         "",
         "## PRIORYTETY ZBIERANIA LEADA",
         fields_block,
@@ -176,8 +177,8 @@ def build_prompt(kb: dict) -> str:
         "## PEŁNA BAZA WIEDZY (cennik i usługi)",
         "Poniżej znajduje się PEŁNY cennik i lista usług firmy TOP KOP. "
         "Analizuj go elastycznie (np. jeśli klient pisze 'c12' lub '12', zrozum, że chodzi o pozycję 'C12/15'). "
-        "Jeśli klient pyta o coś, czego fizycznie nie ma w tym tekście, odpowiedz dokładnie: "
-        "'Nie mam dokładnych danych w systemie, muszę to skonsultować z kierownikiem'.",
+        "Jeśli klient pyta o coś, czego fizycznie nie ma w tym tekście — nie odmawiaj od razu. "
+        "Powiedz że firma może to zrealizować lub omówić, i że kierownik skontaktuje się z wyceną.",
         "",
         kb_json,
     ]
@@ -271,6 +272,9 @@ async def _marketing_worker(client: AsyncOpenAI, history_context: str) -> None:
         "jezyk: polski|rosyjski|angielski|inny. "
         "Jeśli pole nieznane — wartość 'Brak'. "
         "telefon: numer telefonu klienta jeśli podał, inaczej 'Brak'. "
+        "KRYTYCZNE: Jeśli wiadomość klienta nie zawiera żadnych treści biznesowych "
+        "(przypadkowe znaki, pozdrowienia, bełkot) — ustaw intencja: 'Offtopic', "
+        "segment: 'Nieznany', usluga: 'Brak', wszystkie pozostałe pola: 'Brak'. "
         "ZASADY KRYTYCZNE: "
         "1. Jeśli klient pisze o dojeździe (asfalt), usługą pozostaje ta z początku rozmowy. "
         "2. Firma działa na Mazurach — 'goldapi'/'Goldap' = 'Gołdap'. Nie wymyślaj innych miast."
