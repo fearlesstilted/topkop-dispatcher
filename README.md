@@ -10,32 +10,32 @@ pinned: false
 license: mit
 ---
 
-# TOP KOP — AI Dispatcher Widget
+# B2B Lead Dispatcher — TOP KOP
 
-AI-powered lead collection chatbot for TOP KOP construction company (Gołdap, Mazury). Embedded as a Shadow DOM widget on the company website — collects service requests 24/7 and forwards leads to management.
+Intent-parsing chatbot for a construction and heavy machinery company. Qualifies inbound service requests in natural language, extracts structured lead data and routes it to the sales team via webhooks.
 
-## What it does
-- Answers questions about services (earthworks, transport, equipment rental, HDD drilling, paving, steel fabrication)
-- Collects lead data: service type, location, quantity, phone number
-- Sends structured JSON to Make.com → Google Sheets + WhatsApp notification
-- Streams responses via SSE (Gradio 6)
+## Tech Stack
+- **Backend:** Python 3.10+, async (`AsyncOpenAI`, `httpx`)
+- **LLM:** Groq API — LLaMA 3.3 70B (chat), LLaMA 3.1 8B (lead analysis)
+- **UI:** Gradio 6 (SSE streaming)
+- **Integration:** Make.com webhook → Google Sheets + WhatsApp
+- **Embed:** Shadow DOM widget (`widget.js`) — CSS-isolated, drops into any site with one `<script>` tag
 
-## Stack
-- **Python 3.10+** — async throughout (`AsyncOpenAI`, `httpx`)
-- **Gradio 6** — UI and SSE streaming
-- **Groq API** — LLaMA 3.3 70B (main), LLaMA 3.1 8B (lead analysis)
-- **Make.com** — webhook → Google Sheets + WhatsApp
-- **Shadow DOM** (`widget.js`) — CSS isolation for embedding on any site
+## Core Logic
+1. User describes a service need in free text
+2. Bot collects structured lead: service type, location, quantity, phone
+3. After 2+ messages: 8B model extracts JSON lead data
+4. Payload sent via POST to Make.com → Google Sheets row + WhatsApp notification to manager
 
-## Deploy (HuggingFace Spaces)
-Set these secrets in Space Settings:
+## Local Setup
+```bash
+git clone https://github.com/fearlesstilted/topkop-dispatcher
+pip install -r requirements.txt
+cp .env.example .env  # add GROQ_API_KEY and MAKE_WEBHOOK_URL
+python app_web.py
 ```
-GROQ_API_KEY=...
-MAKE_WEBHOOK_URL=...
-```
-Space auto-rebuilds on push to `main`.
 
-## Embed on website
+## Embed on any website
 ```html
 <script src="widget.js" data-endpoint="https://YOUR_SPACE.hf.space"></script>
 ```
